@@ -1,7 +1,7 @@
 
-## Boost Mailman
+## WG21 Mailman
 
-A repository to store customized Boost templates for Mailman.  
+A repository to store customized WG21 templates for Mailman.  
 
 The mailman servers are installed using https://github.com/cppalliance/ansible-mailman3. An installation includes both mailman-core and mailman-web. File locations on a server:  
 
@@ -17,4 +17,4 @@ The mailman servers are installed using https://github.com/cppalliance/ansible-m
 
 - The settings.py file in ansible has been refactored so that instead of being an ansible template, it is static and leverages environment variables. See [settings.py](./settings.py).
 
-- **Environment Variables**: Copy file `env.template` to `.env` and adjust values to match your local environment.  
+- **Environment Variables**: Copy file `env.template` to `.env` and adjust values to match your local environment. Check ansible-mailman3 for the latest updates.  
