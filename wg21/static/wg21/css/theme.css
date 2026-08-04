@@ -1,0 +1,190 @@
+/* WG21 Mailman - shared design tokens + base theme (global tier).
+ * Loaded last in both Postorius and HyperKitty base templates.
+ * See DESIGN.md for the canonical token reference. */
+
+:root {
+    /* Brand */
+    --wg21-navy: oklch(30.48% 0.074 264.66);        /* #1c2d54 */
+    --wg21-navy-grad-top: oklch(30.06% 0.0558 264.92);  /* #202D4A */
+    --wg21-navy-grad-bottom: oklch(30.06% 0.0558 264.92); /* #202D4A */
+    --wg21-gold: oklch(65.98% 0.1084 79.72);        /* #b58a3c */
+    --wg21-gold-border: oklch(66.38% 0.1066 85.34); /* #B18E3E */
+    --wg21-gold-accent: oklch(76.65% 0.1387 91.06); /* #D4AF37 */
+    --wg21-gold-bright: oklch(70.59% 0.1116 86.16); /* #bf9b46 */
+    --wg21-gold-dark: oklch(54.61% 0.09 79.81);     /* #8c6a2c */
+    --wg21-gold-pale: oklch(82.36% 0.0653 86.27 / 0.549); /* #D8C3958C */
+    --wg21-black-bar: oklch(14.48% 0 none);         /* #0A0A0A */
+    --wg21-white: oklch(100% 0 none);               /* #FFFFFF */
+
+    /* Surfaces */
+    --wg21-page-bg: oklch(100% 0 none);             /* #FFFFFF */
+    --wg21-surface: oklch(95.51% 0 none);           /* #F0F0F0 */
+    --wg21-surface-hover: oklch(90.97% 0 none);     /* #E1E1E1 */
+    --wg21-surface-white: oklch(100% 0 none);       /* #ffffff */
+    --wg21-marble: url("../img/marble-bg.png");
+
+    /* Text */
+    --wg21-ink: oklch(30.23% 0.0754 265.69);        /* #1C2C54 */
+    --wg21-body: oklch(0% 0 none);                  /* #000000 */
+    --wg21-muted: color-mix(in oklab, var(--wg21-body) 55%, transparent); /* #0000008C */
+    --wg21-on-navy: oklch(100% 0 none);             /* #FFFFFF */
+    --wg21-on-navy-muted: oklch(76.95% 0.021 267.24); /* #aeb4c2 */
+    --wg21-on-black-bar: oklch(83.6% 0.0043 271.36); /* #c8c9cc */
+    --wg21-on-gold: oklch(30.23% 0.0754 265.69);    /* #1C2C54 */
+
+    /* Links / state */
+    --wg21-link: oklch(47.78% 0.1208 251.01);       /* #1c5f9e */
+    --wg21-link-hover: oklch(65.98% 0.1084 79.72);  /* #b58a3c */
+    --wg21-border: oklch(90.97% 0 none);     /* #E1E1E1 */
+
+    /* Semantic */
+    --wg21-success: oklch(47.46% 0.0998 147.7);     /* #2f6b3a */
+    --wg21-danger: oklch(48.53% 0.1319 25.58);      /* #9c3a36 */
+    --wg21-warning: oklch(56.55% 0.1203 67.39);     /* #a4660e */
+    --wg21-info: oklch(47.78% 0.1208 251.01);       /* #1c5f9e */
+
+    /* Inputs on dark/navy surfaces (e.g. navbar search field) */
+    --wg21-input-on-navy-bg: oklch(0% 0 none / 0.28);      /* rgba(0,0,0,0.28) */
+    --wg21-input-on-navy-border: oklch(100% 0 none / 0.18); /* rgba(255,255,255,0.18) */
+
+    /* Typography */
+    --wg21-font-heading: "DM Serif Text", Georgia, serif;
+    --wg21-font-serif: "EB Garamond", Georgia, serif;
+    --wg21-font-body: "DM Sans", system-ui, -apple-system, sans-serif;
+    --wg21-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+    --wg21-fs-hero: 7.75rem;
+    --wg21-fs-h1: 2rem;
+    --wg21-fs-h2: 1.5rem;
+    --wg21-fs-lead: 1.125rem;
+    --wg21-fs-body: 1rem;
+    --wg21-fs-sm: 0.875rem;
+    --wg21-fs-eyebrow: 0.8125rem;
+    --wg21-lh-tight: 1.1;
+    --wg21-lh-base: 1.5;
+    --wg21-tracking-eyebrow: 0.08em;
+
+    /* Spacing */
+    --wg21-space-1: 0.25rem;
+    --wg21-space-2: 0.5rem;
+    --wg21-space-3: 0.75rem;
+    --wg21-space-4: 1rem;
+    --wg21-space-6: 1.5rem;
+    --wg21-space-8: 2rem;
+    --wg21-space-12: 3rem;
+    --wg21-container-max: 1920px;
+
+    /* Borders, frame & radius */
+    --wg21-radius-sm: 0.25rem;
+    --wg21-radius: 0.5rem;
+    --wg21-radius-lg: 1rem;
+    --wg21-radius-pill: 100%;
+    --wg21-frame-gold-width: 2px;
+    --wg21-frame-gap: 6px;
+    --wg21-frame-color: var(--wg21-gold);
+    --wg21-ornament-greek-key: url("../img/greek-key.svg");
+    --wg21-divider-gold: 2px solid var(--wg21-gold);
+
+    /* Elevation */
+    --wg21-shadow-card: 0 1px 3px rgba(16, 24, 40, 0.08);
+    --wg21-shadow-raised: 0 6px 18px rgba(16, 24, 40, 0.12);
+
+    /* Breakpoints (reference; media queries hardcode px to align to Bootstrap 5) */
+    --wg21-bp-sm: 576px;
+    --wg21-bp-md: 768px;
+    --wg21-bp-lg: 992px;
+    --wg21-bp-xl: 1200px;
+
+    /* Z-index */
+    --wg21-z-navbar: 1030;
+    --wg21-z-dropdown: 1000;
+
+    /* ------------------------------------------------------------
+     * Component tokens (fluid, container-query based)
+     *
+     * Model: each simple component root sets its own base
+     * font-size and establishes a containment context
+     * (container-type: inline-size). Inner text and paddings are
+     * expressed in em so they "respect" the component's base.
+     * Base sizes are clamp(min, N cqi, max) with max = the
+     * current desktop value; shrink only kicks in on narrower
+     * containers.
+     *
+     * The hero is an exception: its title/subtitle/eyebrow roles
+     * diverge too much for a single em ratio, so each has its own
+     * independent clamp.
+     * ------------------------------------------------------------ */
+
+    /* Hero (independent clamps per role)
+     * Scoop steps to 42px below 866px viewport (see components.css). */
+    --wg21-scoop: 28px;
+    /* Content inset; 1.5x–2x scoop keeps text at least half a scoop past the notch end. */
+    --wg21-hero-pad: calc(var(--wg21-scoop) * 1.5);
+    --wg21-hero-fs-title: clamp(2.25rem, 11cqi, 5.75rem);
+    --wg21-hero-fs-subtitle: clamp(1rem, 2.4cqi, 2rem);
+    --wg21-hero-fs-eyebrow: clamp(0.8125rem, 1.8cqi, 1.2rem);
+    /* --wg21-hero-emblem-pad: calc(var(--wg21-scoop) * 1.5); */
+    --wg21-hero-emblem-pad: 2.5rem;
+
+    /* Table (single fluid base drives cell text; head/cells scale in em) */
+    --wg21-table-fs: var(--wg21-fs-body);
+    --wg21-table-fs-head: calc(var(--wg21-fs-body) * 1.2);   /* header row relative to body base */
+    --wg21-table-fs-label: 0.8rem;  /* stacked mobile data-label */
+    --wg21-table-pad-y: 1rem;
+    --wg21-table-pad-x: 1rem;
+
+    /* Buttons */
+    --wg21-btn-fs: var(--wg21-fs-body);
+    --wg21-btn-pad-y: 0.5em;
+    --wg21-btn-pad-x: 1.5em;
+
+    /* Toolbar */
+    --wg21-toolbar-fs: var(--wg21-fs-body);
+    --wg21-toolbar-pad-y: 0.4em;
+    --wg21-toolbar-pad-x: 0.75em;
+
+    /* Footer */
+    --wg21-footer-fs: var(--wg21-fs-body);
+    --wg21-footer-pad-y: 1.5em;
+    --wg21-footer-pad-x: 1em;
+
+    /* Navbar (mixed roles: text + icon + emblem; independent tokens) */
+    --wg21-navbar-fs-wordmark: var(--wg21-fs-body);
+    --wg21-navbar-fs-breadcrumb: var(--wg21-fs-body);
+    --wg21-navbar-fs-chevron: 1.2rem;
+}
+
+/* ---- Global base (applies to every page of both apps) ---- */
+
+body {
+    background-color: var(--wg21-page-bg);
+    color: var(--wg21-body);
+    font-family: var(--wg21-font-body);
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: var(--wg21-font-heading);
+    color: var(--wg21-ink);
+}
+
+a {
+    color: var(--wg21-link);
+    text-decoration: none;
+}
+a:hover {
+    color: var(--wg21-link-hover);
+}
+
+*:focus-visible {
+  outline: 3px solid var(--wg21-gold-accent); /* Choose your brand color */
+  outline-offset: 2px;      /* Creates breathing room between element and line */
+}
+
+/* Content panel both apps wrap main content in */
+.wg21-content {
+    background-color: var(--wg21-surface-white);
+    max-width: var(--wg21-container-max);
+    margin: 0 auto;
+    padding: var(--wg21-space-6);
+}

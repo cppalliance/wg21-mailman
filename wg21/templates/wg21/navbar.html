@@ -1,0 +1,90 @@
+{% load i18n gravatar %}
+{% comment %}
+    Shared WG21 primary navbar (navy gradient, gold rule, emblem + wordmark +
+    breadcrumb + optional search + avatar). Used by both Postorius and
+    HyperKitty base templates so chrome stays identical.
+
+    The avatar (Gravatar) is the sole account entry point on both auth states:
+      - Authenticated: dropdown -> wg21/account_menu.html
+      - Anonymous:     dropdown -> wg21/auth_links.html (Sign In / Sign Up)
+    django-gravatar2's default fallback ("mm" / mystery-man) covers the empty
+    email case for anonymous users.
+
+    Params:
+      brand_url        - URL name for the brand/home link (e.g. 'hk_root',
+                         'list_index'). Also used as the logout ?next= target.
+      breadcrumb_label - Already-translated string shown after the ">" chevron.
+      search_action    - Optional URL name for the search form action. If
+                         omitted, the search field (and the collapse toggler)
+                         are not rendered.
+      search_query     - Optional current search query string.
+      mlist            - Optional MailingList; when set with search_action,
+                         search is scoped to that list and the placeholder /
+                         hidden input reflect it.
+{% endcomment %}
+{% url brand_url as logout_next_url %}
+{% trans 'Logout' as logout_label %}
+<nav class="navbar navbar-expand-md wg21-navbar" id="navbar-main">
+    <div class="container-fluid wg21-navbar__inner">
+        <div class="navbar-header d-flex align-items-center">
+            {% if search_action %}
+                <button type="button" class="navbar-toggler collapsed"
+                        data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbar-main" aria-expanded="false"
+                        aria-label="{% trans 'Toggle navigation' %}">
+                    <span class="sr-only">{% trans 'Toggle navigation' %}</span>
+                    <span class="fa fa-bars"></span>
+                </button>
+            {% endif %}
+            <a class="wg21-navbar__brand" href="{% url brand_url %}">
+                {% include 'wg21/emblem.html' with size='nav' %}
+                <span class="wg21-navbar__wordmark">{% trans 'Mailing Lists' %}</span>
+            </a>
+            {% if breadcrumb_label %}
+                <span class="wg21-breadcrumb ms-2">{{ breadcrumb_label }}</span>
+            {% endif %}
+        </div>
+
+        <div class="wg21-navbar__spacer"></div>
+
+        {% if search_action %}
+            <div class="navbar-collapse collapse justify-content-end">
+                <form name="search" method="get" action="{% url search_action %}"
+                      class="navbar-form navbar-right my-2 my-lg-2 ms-2" role="search">
+                    {% if mlist %}<input type="hidden" name="mlist" value="{{ mlist.name }}" />{% endif %}
+                    <div class="input-group">
+                        <input name="q" type="text" class="form-control wg21-input--search search"
+                               {% if mlist %}
+                                   placeholder="{% trans 'Search this list' %}"
+                                   aria-label="{% trans 'Search this list' %}"
+                               {% else %}
+                                   placeholder="{% trans 'Search all lists' %}"
+                                   aria-label="{% trans 'Search all lists' %}"
+                               {% endif %}
+                               {% if search_query %}value="{{ search_query }}"{% endif %} />
+                        <button class="btn search-button" aria-label="{% trans 'Search' %}">
+                            <span class="fa fa-search"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+
+        <div class="dropdown wg21-navbar__auth">
+            <button type="button"
+                    class="btn dropdown-toggle user-button wg21-avatar p-0"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false"
+                    aria-label="{% trans 'Account menu' %}">
+                {% gravatar user.email 30 %}
+            </button>
+            <div class="dropdown-menu dropdown-menu-end">
+                {% if user.is_authenticated %}
+                    {% include 'wg21/account_menu.html' %}
+                {% else %}
+                    {% include 'wg21/auth_links.html' %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>

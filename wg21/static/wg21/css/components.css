@@ -1,0 +1,709 @@
+/* WG21 Mailman - shared components (navy/gold heraldic system).
+ * Loaded after theme.css and after each app's Bootstrap in base.html.
+ * Class prefix: .wg21-*  (see DESIGN.md / docs/redesign-components.md). */
+
+/* ============================================================
+   Utility bar (black top strip)
+   ============================================================ */
+.wg21-utilitybar {
+    background: var(--wg21-black-bar);
+    color: var(--wg21-on-black-bar);
+    font-family: var(--wg21-font-mono);
+    font-size: var(--wg21-fs-lead);
+    box-shadow: 0 3.02px 48.32px 0 rgb(from var(--wg21-black-bar) r g b / 0.55%);
+    overflow-block: auto;
+  }
+  .wg21-utilitybar__inner {
+    max-width: var(--wg21-container-max);
+    margin: 0 auto;
+    padding: 0 var(--wg21-space-8);
+    display: flex;
+    align-items: center;
+}
+.wg21-utilitybar__link {
+    color: rgb(from var(--wg21-on-navy) r g b / 50%);
+    text-decoration: none;
+    letter-spacing: 0.69px;
+    font-weight: 400;
+    padding: var(--wg21-space-4) var(--wg21-space-8);
+    border-right: 1.25px solid rgb(from var(--wg21-on-navy) r g b / 6%);
+}
+.wg21-utilitybar__link:hover {
+    color: var(--wg21-white);
+}
+.wg21-utilitybar__link--active {
+  background-color: rgb(from var(--wg21-gold-accent) r g b / 8%);
+    color: var(--wg21-gold-accent);
+    font-weight: 700;
+}
+
+/* ============================================================
+   Primary navbar (navy gradient)
+   ============================================================ */
+.wg21-navbar {
+    background: linear-gradient(180deg, var(--wg21-navy-grad-top), var(--wg21-navy-grad-bottom));
+    border-bottom: 2px solid var(--wg21-gold);
+    padding: 0;
+}
+.wg21-navbar .wg21-navbar__inner {
+    container-type: inline-size;
+    container-name: wg21-navbar;
+    max-width: var(--wg21-container-max);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: var(--wg21-space-4);
+    padding: var(--wg21-space-2) var(--wg21-space-8);
+    width: 100%;
+}
+.wg21-navbar a,
+.wg21-navbar .nav-link {
+    color: var(--wg21-on-navy);
+}
+.wg21-navbar a:hover,
+.wg21-navbar .nav-link:hover {
+    color: var(--wg21-gold-bright);
+}
+.wg21-navbar__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--wg21-space-3);
+    text-decoration: none;
+}
+.wg21-navbar__brand img {
+    height: 38px;
+    width: auto;
+}
+.wg21-emblem { display: block; width: auto; }
+.wg21-emblem--sm { height: 28px; }
+.wg21-emblem--nav { height: 40px; }
+.wg21-emblem--md { height: 64px; }
+.wg21-emblem--lg { max-height: 130px; }
+.wg21-navbar__wordmark {
+    font-family: var(--wg21-font-serif);
+    font-size: var(--wg21-navbar-fs-wordmark);
+    color: var(--wg21-gold-pale);
+    line-height: 1;
+}
+.wg21-breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wg21-space-3);
+    color: var(--wg21-on-navy);
+    font-family: var(--wg21-font-mono);
+    font-size: var(--wg21-navbar-fs-breadcrumb);
+}
+.wg21-breadcrumb::before {
+    content: "\203A"; /* › */
+    color: var(--wg21-gold);
+    font-size: var(--wg21-navbar-fs-chevron);
+}
+.wg21-navbar__spacer { flex: 1 1 auto; }
+
+/* Search field (dark on navy) */
+.wg21-input--search,
+.wg21-navbar .search,
+.wg21-navbar input[type="text"] {
+    background: var(--wg21-input-on-navy-bg);
+    border: 1px solid var(--wg21-input-on-navy-border);
+    color: var(--wg21-on-navy);
+    border-radius: var(--wg21-radius-sm);
+    padding: var(--wg21-space-2) var(--wg21-space-3);
+    font-size: var(--wg21-fs-sm);
+}
+.wg21-input--search::placeholder { color: var(--wg21-on-navy-muted); }
+
+/* Avatar */
+.wg21-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--wg21-radius-pill);
+    background: var(--wg21-gold);
+    color: var(--wg21-on-gold);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+.wg21-navbar .gravatar { border: 2px solid var(--wg21-gold); }
+
+/* Dropdown menus that live inside the navbar (avatar/account menu) sit on a
+ * white surface, so opt them out of the navbar's on-navy link color. */
+.wg21-navbar .dropdown-menu { color: var(--wg21-body); }
+.wg21-navbar .dropdown-menu a,
+.wg21-navbar .dropdown-menu a:hover,
+.wg21-navbar .dropdown-menu a:focus { color: var(--wg21-body); }
+.wg21-navbar .dropdown-menu .username { color: var(--wg21-muted); }
+
+/* ============================================================
+   Gold rule
+   ============================================================ */
+.wg21-rule--gold {
+    border: 0;
+    border-top: var(--wg21-divider-gold);
+    margin: 0;
+}
+
+/* ============================================================
+   Gradient divider (auto-orients to parent flex-direction)
+   ============================================================ */
+.wg21-divider {
+    flex: 0 0 5px;
+    align-self: stretch;
+    min-height: 1rem;
+    container-type: size;
+    position: relative;
+}
+.wg21-divider::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        var(--wg21-surface),
+        var(--wg21-gold-border) 50%,
+        var(--wg21-surface)
+    );
+}
+@container (min-aspect-ratio: 1/1) {
+    .wg21-divider::before {
+        background: linear-gradient(
+            to right,
+            var(--wg21-surface),
+            var(--wg21-gold-border) 50%,
+            var(--wg21-surface)
+        );
+    }
+}
+
+/* ============================================================
+   Ornamental frame (gold double border + greek-key)
+   ============================================================ */
+.wg21-frame {
+    position: relative;
+    border: var(--wg21-frame-gold-width) solid var(--wg21-frame-color);
+    border-radius: 2px;
+    padding: var(--wg21-space-2);
+    background: var(--wg21-surface);
+}
+.wg21-frame::before {
+    content: "";
+    position: absolute;
+    inset: var(--wg21-frame-gap);
+    border: 1px solid var(--wg21-frame-color);
+    pointer-events: none;
+}
+.wg21-frame__body {
+    position: relative;
+    padding: var(--wg21-space-8);
+}
+.wg21-frame--marble {
+    background-image: var(--wg21-marble);
+    background-size: cover;
+    background-position: center;
+}
+/* Greek-key vertical ornaments on the sides of panels */
+.wg21-frame--ornate .wg21-frame__body {
+    padding-left: 2.25rem;
+    padding-right: 2.25rem;
+}
+.wg21-frame--ornate::after {
+    content: "";
+    position: absolute;
+    top: var(--wg21-space-4);
+    bottom: var(--wg21-space-4);
+    left: 0.5rem;
+    width: 18px;
+    background-image: url("../img/greek-key.svg");
+    background-repeat: repeat-y;
+    background-size: 18px auto;
+    opacity: 0.9;
+}
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.wg21-hero {
+  /* Base weight for the double gold frame. The whole frame derives from this:
+   *   outer gold line = 2× weight   (edge of the hero)
+   *   surface band    = 3× weight   (shows --wg21-surface between the lines)
+   *   inner gold line = 1× weight
+   * The frame is drawn on a single ::before overlay so both gold lines share
+   * one border-radius + corner-shape and can never drift out of alignment. */
+  --wg21-frame-gold-width: 3px;
+  --wg21-frame-inset: calc(var(--wg21-frame-gold-width) * 3);
+
+  position: relative;
+  container-type: inline-size;
+  container-name: wg21-hero;
+  margin: var(--wg21-space-6) 0;
+  background-color: var(--wg21-surface);
+  border-radius: var(--wg21-scoop);
+  corner-shape: scoop;
+
+  display: grid;
+  grid-template-columns: 1.5fr 5px 1fr;
+  align-items: center;
+  overflow: hidden;
+}
+
+.wg21-hero .wg21-divider {
+    align-self: stretch;
+    margin-block: var(--wg21-hero-emblem-pad);
+}
+
+/* Single overlay that paints the entire frame on top of the grid content:
+ *   border      -> outer gold line
+ *   box-shadow  -> opaque surface band (hides the emblem bleed at every corner)
+ *   outline     -> inner gold line
+ * Its transparent center lets the content show through; pointer-events: none
+ * keeps links clickable. */
+.wg21-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border: calc(var(--wg21-frame-gold-width) * 1.5) solid var(--wg21-frame-color);
+  outline: var(--wg21-frame-gold-width) solid var(--wg21-frame-color);
+  outline-offset: calc(var(--wg21-frame-inset) * -1);
+  box-shadow: inset 0 0 0 calc(var(--wg21-frame-gold-width) * 2) var(--wg21-surface);
+  border-radius: var(--wg21-scoop);
+  corner-shape: scoop;
+}
+
+.wg21-hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--wg21-hero-pad);
+}
+
+.wg21-hero__emblem {
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  background-image: url("../img/hero-marble.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.wg21-hero__logo {
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Mobile: single-column hero, fixed content padding, hide emblem panel. */
+@media (max-width: 768px) {
+  .wg21-hero {
+    --wg21-scoop: 20px;
+    grid-template-columns: 1fr;
+  }
+  .wg21-hero__content {
+    --wg21-hero-pad: 36px 28px;
+  }
+  .wg21-hero__emblem,
+  .wg21-hero .wg21-divider {
+    display: none;
+  }
+}
+
+.wg21-hero__title {
+    font-family: var(--wg21-font-heading);
+    font-size: var(--wg21-hero-fs-title);
+    text-wrap: balance;
+    color: var(--wg21-ink);
+    line-height: var(--wg21-lh-tight);
+    margin: 0 0 var(--wg21-space-3);
+}
+.wg21-hero__subtitle {
+    font-family: var(--wg21-font-serif);
+    font-size: var(--wg21-hero-fs-subtitle);
+    color: var(--wg21-navy);
+}
+.wg21-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: var(--wg21-space-3);
+    letter-spacing: var(--wg21-tracking-eyebrow);
+    color: var(--wg21-gold-border);
+    font-size: var(--wg21-hero-fs-eyebrow);
+    margin-bottom: var(--wg21-space-2);
+    text-wrap: pretty;
+}
+.wg21-eyebrow::before {
+    content: "";
+    min-width: 40px;
+    max-width: clamp(40px, 10cqi, 180px);
+    height: 2px;
+    background: var(--wg21-gold-border);
+    display: inline-block;
+    flex-grow: 1;
+}
+.wg21-linkicon {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wg21-space-2);
+    color: var(--wg21-navy);
+    font-family: var(--wg21-font-serif);
+}
+
+/* Compact horizontal strip variant of the hero.
+ * Markup order is (emblem, divider, content) -- emblem on the left.
+ * Everything not overridden here inherits from .wg21-hero above. */
+.wg21-hero--compact {
+    --wg21-hero-fs-title: clamp(2rem, 5cqi, 5rem);
+    --wg21-hero-fs-subtitle: clamp(1.5rem, 1.6cqi, 2rem);
+
+    grid-template-columns: 1fr 5px 2fr;
+}
+.wg21-hero--compact .wg21-eyebrow { display: none; }
+
+@media (max-width: 768px) {
+  .wg21-hero--compact .wg21-hero__content {
+    order: 1;
+  }
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+/* Colors are custom-property-driven: variant classes only set the
+ * --wg21-btn-* variables. This lets the "buttons inside hoverable rows"
+ * guard further down restore any variant's colors with a single rule,
+ * instead of re-declaring every variant at high specificity. */
+.wg21-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--wg21-space-2);
+    font-family: var(--wg21-font-body);
+    font-weight: 400;
+    font-size: var(--wg21-btn-fs);
+    padding: var(--wg21-btn-pad-y) var(--wg21-btn-pad-x);
+    border-radius: var(--wg21-radius-lg);
+    border: 3px solid var(--wg21-btn-border, var(--wg21-gold-border));
+    cursor: pointer;
+    text-decoration: none;
+    min-width: 10rem;
+    background: var(--wg21-btn-bg);
+    color: var(--wg21-btn-color);
+}
+.wg21-btn:hover {
+    background: var(--wg21-btn-hover-bg, var(--wg21-btn-bg));
+    color: var(--wg21-btn-hover-color, var(--wg21-btn-color));
+}
+.wg21-btn--primary {
+    --wg21-btn-bg: var(--wg21-navy);
+    --wg21-btn-color: var(--wg21-on-navy);
+    --wg21-btn-hover-bg: var(--wg21-navy-grad-bottom);
+    --wg21-btn-hover-color: var(--wg21-white);
+}
+.wg21-btn--outline {
+    --wg21-btn-bg: var(--wg21-surface-white);
+    --wg21-btn-color: var(--wg21-navy);
+    --wg21-btn-hover-bg: var(--wg21-surface);
+    --wg21-btn-hover-color: var(--wg21-navy);
+}
+.wg21-btn--gold {
+    --wg21-btn-bg: var(--wg21-gold-bright);
+    --wg21-btn-color: var(--wg21-on-gold);
+    --wg21-btn-border: var(--wg21-gold-dark);
+    --wg21-btn-hover-bg: var(--wg21-gold-dark);
+    --wg21-btn-hover-color: var(--wg21-white);
+    font-family: var(--wg21-font-serif);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* Buttons inside hoverable table rows keep their own colors.
+ * HyperKitty's compiled @extend rule
+ *   .all-lists table.lists tr.list:hover a { color: white }   (0,4,3)
+ * would otherwise repaint anchor buttons on row hover. The deliberate
+ * .wg21-btn.wg21-btn duplication inside :is() makes these (0,4,3) too;
+ * this file loads last, so the tie resolves our way. Values come from
+ * the same --wg21-btn-* variables, so every variant is covered. */
+.wg21-table tbody tr:hover :is(a, button):is(.wg21-btn.wg21-btn) {
+    background: var(--wg21-btn-bg);
+    color: var(--wg21-btn-color);
+}
+.wg21-table tbody tr:hover :is(a, button):is(.wg21-btn.wg21-btn):hover {
+    background: var(--wg21-btn-hover-bg, var(--wg21-btn-bg));
+    color: var(--wg21-btn-hover-color, var(--wg21-btn-color));
+}
+
+/* Email input (light) */
+.wg21-input {
+    background: var(--wg21-surface-white);
+    border: 1px solid var(--wg21-border);
+    border-radius: var(--wg21-radius-sm);
+    padding: var(--wg21-space-3) var(--wg21-space-4);
+    font-size: var(--wg21-fs-body);
+    color: var(--wg21-body);
+}
+
+/* ============================================================
+   Filter toolbar (variants a: segmented role tabs, b: hide+sort)
+   ============================================================ */
+.wg21-toolbar {
+    container-type: inline-size;
+    container-name: wg21-toolbar;
+    display: flex;
+    align-items: center;
+    gap: var(--wg21-space-4);
+    background: var(--wg21-surface);
+    border: 1px solid var(--wg21-gold);
+    border-bottom: none;
+    padding: var(--wg21-toolbar-pad-y) var(--wg21-toolbar-pad-x);
+    font-family: var(--wg21-font-serif);
+    font-size: var(--wg21-toolbar-fs);
+}
+.wg21-toolbar__label {
+    background: var(--wg21-gold);
+    color: var(--wg21-on-gold);
+    font-weight: 700;
+    padding: var(--wg21-space-1) var(--wg21-space-4);
+    border-radius: var(--wg21-radius-sm);
+}
+.wg21-segmented {
+    display: flex;
+    align-items: center;
+    gap: var(--wg21-space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.wg21-segmented li { position: relative; padding-right: var(--wg21-space-4); }
+.wg21-segmented li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 1em;
+    border-right: 1px solid var(--wg21-border);
+}
+.wg21-segmented a { color: var(--wg21-muted); }
+.wg21-segmented a.active,
+.wg21-segmented a[aria-current="page"] { color: var(--wg21-ink); font-weight: 700; }
+.wg21-toolbar__spacer { flex: 1 1 auto; }
+.wg21-check { color: var(--wg21-body); margin-right: var(--wg21-space-4); }
+.wg21-sort .dropdown-toggle, .wg21-sort {
+    color: var(--wg21-ink);
+    background: transparent;
+    border: none;
+    font-family: var(--wg21-font-serif);
+}
+
+/* ============================================================
+   Data table / list panel (ornate framed)
+   ============================================================ */
+.wg21-panel {
+    container-type: inline-size;
+    container-name: wg21-panel;
+    border: 4.57px solid var(--wg21-gold-border);
+    background: var(--wg21-surface-white);
+    position: relative;
+}
+.wg21-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    font-size: var(--wg21-table-fs);
+    /* If Bootstrap's .table/.table-hover ever lands on a wg21 table, its
+     * hover rule (.table-hover > tbody > tr:hover > *) resolves entirely
+     * through these variables -- keep the tint on-theme instead of
+     * fighting the rule's specificity. */
+    --bs-table-bg: transparent;
+    --bs-table-accent-bg: transparent;
+    --bs-table-hover-bg: var(--wg21-surface-hover);
+    --bs-table-hover-color: var(--wg21-body);
+}
+.wg21-table thead tr {
+  border-inline: 4.57px solid var(--wg21-gold-border);
+  border-block-end: 4.57px solid var(--wg21-gold-border);
+  background-color: var(--wg21-surface);
+}
+
+/* Canonical row hover — applies to both apps */
+.wg21-table tbody tr:hover {
+    background-color: var(--wg21-surface);
+    color: var(--wg21-body);
+}
+.wg21-table tbody tr:hover a:not(.wg21-btn) {
+    color: inherit;
+}
+
+/* Hoverable rows. The vendor rules we must beat come from the compiled
+ * @extend output of _hyperkitty-index.scss (loaded before this file):
+ *   .all-lists table.lists tr.list:hover     (0,4,2)  color:white; background:#08c
+ *   .all-lists table.lists tr.list:hover a   (0,4,3)  color:white
+ * Both selectors below are (0,4,3)+ and load later, so they win. */
+table.lists.wg21-table tbody tr.list:hover {
+  background-color: var(--wg21-surface);
+  color: var(--wg21-body);
+}
+
+/* Plain links follow the row's hover color; .wg21-btn opts out (see the
+ * "buttons inside hoverable rows" guard after the button variants). */
+table.lists.wg21-table tbody tr.list:hover a:not(.wg21-btn) {
+  color: inherit;
+}
+
+.wg21-table thead th,
+.wg21-table__head th {
+    background: var(--wg21-navy);
+    color: var(--wg21-on-navy);
+    font-family: var(--wg21-font-serif);
+    font-weight: 400;
+    font-size: var(--wg21-table-fs-head);
+    padding: var(--wg21-table-pad-y) var(--wg21-table-pad-x);
+    text-align: left;
+    border: none;
+    text-transform: none;
+    letter-spacing: normal;
+}
+.wg21-table tbody {
+  border-inline: 4.57px solid var(--wg21-gold-border);
+}
+.wg21-table tbody td {
+    padding: var(--wg21-table-pad-y) var(--wg21-table-pad-x);
+    border-top: none;
+    border-bottom: 2px solid var(--wg21-border);
+    background: transparent;
+    vertical-align: middle;
+    color: var(--wg21-muted);
+    font-weight: 400;
+    text-wrap: balance;
+}
+.wg21-table tbody tr:last-child td { border-bottom: none; }
+.wg21-table .wg21-table__name { font-weight: 500; color: var(--wg21-ink); }
+.wg21-table .wg21-table__name:hover { color: var(--wg21-ink); }
+.wg21-table .wg21-table__desc { color: var(--wg21-muted); }
+.wg21-table__actions { display: flex; gap: var(--wg21-space-3); justify-content: flex-end; }
+
+/* Greek-key side rails on the panel */
+.wg21-panel--ornate { padding: 0 50px; }
+.wg21-panel--ornate::before,
+.wg21-panel--ornate::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 42px;
+    background-image: url("../img/greek-key.svg");
+    background-repeat: repeat-y;
+    background-size: 42px auto;
+}
+.wg21-panel--ornate::before { left: 4px; }
+.wg21-panel--ornate::after { right: 4px; }
+
+/* ============================================================
+   Footer (marble strip)
+   ============================================================ */
+.wg21-footer {
+    background-image: var(--wg21-marble);
+    background-size: cover;
+    background-position: center;
+    border-top: 2px solid var(--wg21-gold);
+    margin-top: var(--wg21-space-12);
+    padding: var(--wg21-footer-pad-y) var(--wg21-footer-pad-x);
+}
+.wg21-footer__inner {
+    container-type: inline-size;
+    container-name: wg21-footer;
+    max-width: var(--wg21-container-max);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--wg21-space-4);
+    font-family: var(--wg21-font-serif);
+    font-size: var(--wg21-footer-fs);
+    color: var(--wg21-gold-dark);
+}
+.wg21-footer__center { flex: 1 1 auto; text-align: center; font-style: italic; }
+
+/* ============================================================
+   HyperKitty global resets
+   Undo baked-in rules from hyperkitty.scss that fight the WG21
+   theme on every HyperKitty page. Keep this list tight and only
+   fix rules that cannot be neutralized by removing legacy class
+   hooks from templates (see hyperkitty/index.html for why some
+   hooks are retained -- hyperkitty-index.js keys off them).
+   ============================================================ */
+html { font-size: 16px; }                       /* undo _hyperkitty-base.scss */
+body { display: block; }                        /* undo body grid */
+.flashmsgs { position: static; }                /* undo .flashmsgs { position: absolute } */
+
+.wg21-hero__title,
+.wg21-hero h1 {
+    font-size: var(--wg21-hero-fs-title) !important;   /* beat h1 { !important } */
+    line-height: var(--wg21-lh-tight);
+}
+
+/* ============================================================
+   HyperKitty listing overrides
+   Beat _hyperkitty-index.scss rules that still land on our
+   listing because hyperkitty-index.js requires the legacy class
+   hooks (all-lists, lists, list, list-name, private, inactive)
+   to stay in the template. Selectors here match or exceed the
+   specificity of the SCSS ones and always load after them.
+   ============================================================ */
+.wg21-listing .wg21-table tbody tr.private,
+.wg21-listing .wg21-table tbody tr.inactive { background: transparent; }
+.wg21-listing .wg21-table tbody tr.inactive .wg21-table__name { color: var(--wg21-muted); }
+.wg21-listing .wg21-table .wg21-table__name.list-name {
+    font-size: inherit;
+    font-weight: 500;
+    color: var(--wg21-ink);
+}
+.wg21-listing .wg21-segmented a.active,
+.wg21-listing .wg21-segmented a[aria-current="page"] {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.wg21-listing p.hide-switches { padding-top: 0; }
+
+/* Muted italic tag next to a list name (private / inactive). */
+.wg21-tag {
+    font-family: var(--wg21-font-serif);
+    font-size: 0.85em;
+    color: var(--wg21-muted);
+    font-style: italic;
+    margin-left: var(--wg21-space-2);
+}
+/* Full list address under the display name. */
+.wg21-list-address {
+    font-family: var(--wg21-font-mono);
+    font-size: 0.85em;
+    color: var(--wg21-muted);
+    margin-top: var(--wg21-space-1);
+}
+
+/* ============================================================
+   Responsive: collapse framed table to stacked blocks < md
+   ============================================================ */
+@media (max-width: 767.98px) {
+    .wg21-navbar .wg21-navbar__inner { flex-wrap: wrap; }
+    .wg21-panel--ornate { padding: 0; }
+    .wg21-panel--ornate::before, .wg21-panel--ornate::after { display: none; }
+    .wg21-table thead { display: none; }
+    .wg21-table, .wg21-table tbody, .wg21-table tr, .wg21-table td { display: block; width: 100%; }
+    .wg21-table tr { border-bottom: 2px solid var(--wg21-gold); padding: var(--wg21-space-2) 0; }
+    .wg21-table td { border: none; padding: var(--wg21-space-1) var(--wg21-space-4); }
+    .wg21-table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        font-family: var(--wg21-font-serif);
+        font-weight: 700;
+        color: var(--wg21-muted);
+        text-transform: uppercase;
+        font-size: var(--wg21-table-fs-label);
+        letter-spacing: 0.05em;
+    }
+    .wg21-table__actions { justify-content: flex-start; }
+    .wg21-hero__grid { flex-direction: column; text-align: center; }
+}

@@ -1,0 +1,11 @@
+{% load static %}
+{% load i18n %}
+{% comment %}
+  Hero emblem panel: marble background (.wg21-hero__emblem) + centered logo
+  (.wg21-hero__logo). Pass decorative=True when the whole panel is presentational.
+{% endcomment %}
+<div class="wg21-hero__emblem"{% if decorative %} aria-hidden="true"{% endif %}>
+  <img src="{% static 'wg21/img/hero-image.png' %}"
+       alt="{% if decorative %}{% else %}{% trans 'WG21' %}{% endif %}"
+       class="wg21-hero__logo" />
+</div>

@@ -1,0 +1,11 @@
+{% load i18n %}
+{% comment %} Shared black utility bar. Params: active (one of: lists, wg21, pragma, herald).
+   Link destinations are placeholders for now. {% endcomment %}
+<div class="wg21-utilitybar">
+    <div class="wg21-utilitybar__inner">
+        <a href="{% url 'list_index' %}" class="wg21-utilitybar__link wg21-utilitybar__link--active">{% trans 'Mailing List' %}</a>
+        <a href="https://wg21.org/" class="wg21-utilitybar__link">WG21.org</a>
+        <a href="https://example.com" class="wg21-utilitybar__link">Pragma</a>
+        <a href="https://example.com" class="wg21-utilitybar__link">The Herald</a>
+    </div>
+</div>
