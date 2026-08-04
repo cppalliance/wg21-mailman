@@ -9,16 +9,9 @@ LIST_PARTS="${SEED_LISTS:-delegates,paper-reviews,general,dev,announce,cpp,boost
 THREADS="${SEED_THREADS:-12}"
 REPLIES="${SEED_REPLIES:-5}"
 
-echo "==> Ensuring Mailman domain: ${DOMAIN}"
-# Idempotent: the Python expression no-ops when the domain already exists.
-# Errors are surfaced (stderr unredirected) so real container/connection
-# failures aren't masked as "already provisioned".
-if ! docker compose exec -T mailman-core mailman --run-as-root shell -c \
-  "from mailman.interfaces.domain import IDomainManager; from zope.component import getUtility; mgr = getUtility(IDomainManager); mgr.add('${DOMAIN}') if '${DOMAIN}' not in [d.mail_host for d in mgr] else None"; then
-  echo "  WARNING: domain provisioning command failed; the list create step below will surface the real cause" >&2
-fi
-
 echo "==> Creating mailing lists in Mailman core"
+# `mailman create` registers the list's domain by default (-d/--domain); no
+# separate domain step is needed. (mailman shell has no -c; use -r for scripts.)
 IFS=',' read -ra PARTS <<< "${LIST_PARTS}"
 for part in "${PARTS[@]}"; do
   part="$(echo "$part" | xargs)"
@@ -37,10 +30,7 @@ for part in "${PARTS[@]}"; do
 done
 
 echo "==> Seeding HyperKitty archives (${THREADS} threads x ${REPLIES} msgs per list)"
-docker compose exec -T \
-  -e MAILMAN_DOMAIN="${DOMAIN}" \
-  -e SEED_LISTS="${LIST_PARTS}" \
-  mailman-web sh -c "cd /opt/mailman-web && PYTHONPATH=/opt/mailman-web python /opt/wg21-scripts/seed_dev_data.py \
+docker compose exec -T mailman-web sh -c "cd /opt/mailman-web && PYTHONPATH=/opt/mailman-web python /opt/wg21-scripts/seed_dev_data.py \
   --domain '${DOMAIN}' \
   --lists '${LIST_PARTS}' \
   --threads '${THREADS}' \
@@ -50,7 +40,7 @@ echo "==> Syncing list metadata from Mailman"
 docker compose exec -T mailman-web python manage.py mailman_sync
 
 echo "==> Updating search index"
-docker compose exec -T mailman-web python manage.py update_index --remove -v 0 || true
+docker compose exec -T mailman-web python manage.py update_index --remove -v 0
 
 echo ""
 echo "Ready:"

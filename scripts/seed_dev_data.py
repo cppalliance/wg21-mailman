@@ -114,8 +114,16 @@ def main() -> int:
         ),
         help="Comma-separated local parts (without @domain)",
     )
-    parser.add_argument("--threads", type=int, default=35)
-    parser.add_argument("--replies", type=int, default=6)
+    parser.add_argument(
+        "--threads",
+        type=int,
+        default=int(os.environ.get("SEED_THREADS", "12")),
+    )
+    parser.add_argument(
+        "--replies",
+        type=int,
+        default=int(os.environ.get("SEED_REPLIES", "5")),
+    )
     args = parser.parse_args()
 
     list_names = [f"{part.strip()}@{args.domain}" for part in args.lists.split(",")]

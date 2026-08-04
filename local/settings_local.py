@@ -4,7 +4,8 @@
 # Purpose: reproduce the production override mechanism locally, where
 # wg21-mailman/settings.py registers a custom static dir + templates dir.
 # In prod those are static_custom/ and templates/ next to the project; here
-# they are mounted under the web data volume by docker-compose.yml.
+# docker-compose.yml bind-mounts them under /opt/wg21-custom/ (outside the
+# web_data volume so the entrypoint's chown does not choke on read-only mounts).
 import sys
 
 # Dev-only: the maxking/mailman-web image hardcodes `DEBUG = False` in its
