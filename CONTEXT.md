@@ -1,0 +1,23 @@
+# Context Glossary - WG21 Mailman
+
+Canonical vocabulary for this repo. Glossary only - no implementation details.
+
+## Terms
+
+- **Harness** - the local docker stack (postgres + mailman-core + mailman-web) that runs the app. This repo carries its OWN self-contained harness: `docker-compose.yml` plus `local/` (`urls.py`, `uwsgi.ini`, `settings_local.py`). The sibling `mailman-local` is a separate generic harness (used by `boost-mailman`) kept as a reference, but is not required to run wg21 locally.
+- **Content repo** - a per-organization repo holding template/static/settings customizations, deployed by ansible in production. `boost-mailman` and `wg21-mailman` are content repos. This repo (`wg21-mailman`) is the content repo for the lists site; unlike `boost-mailman` it also bundles its own local harness (above).
+- **Override** - a custom template or static file that takes precedence over the upstream Postorius/HyperKitty/django-mailman3 default, via Django's template-loader / staticfiles-finder ordering.
+- **static_custom** - the directory registered in `STATICFILES_DIRS`. Custom static files collected from here win over package static of the same path. Custom static is delivered into this directory in production by ansible.
+- **templates (custom)** - the directory registered in `TEMPLATES[0]['DIRS']`. Custom templates here win over package templates of the same name.
+- **Shared namespace (`wg21`)** - the cross-app static + template namespace (`static_custom/wg21/...`, `templates/wg21/...`) holding the design system (theme/components CSS, shared partials) used by BOTH Postorius and HyperKitty. The single source of truth that prevents style duplication between the two apps.
+- **Base theme (global tier)** - tokens, fonts, navbar, footer, buttons, inputs, and the gold-frame primitive applied to EVERY page of both apps.
+- **Page components (targeted tier)** - the elaborate components (hero variants, filter toolbars, ornate framed table) applied only on specific mocked pages.
+- **Ornamental frame** - the signature gold double-border with Greek-key (meander) corner/side ornaments wrapping hero cards and the list table.
+- **Emblem** - the envelope-with-laurel brand mark. The mockups show "WG21" as placeholder; the official lists-site mark is to be supplied.
+- **Per-app static override** - a static file under `postorius/static/postorius/...` or `hyperkitty/static/hyperkitty/...` that shadows the same-named package file via staticfiles-finder precedence. Distinct from the shared `wg21` namespace: today these trees are empty placeholders (kept only so the ansible copy paths exist on a fresh checkout); they gain real files only when an app needs a static override that is not shared.
+- **Visual reskin** - restyling existing pages/controls without changing behavior. Distinguished from **new-behavior controls** (role filter tabs, inline subscribe, email signup CTA) which are deferred feature work requiring view/logic changes.
+- **Archives** - the HyperKitty section (URL `archives/`). The "Archives View" mockup maps to HyperKitty `index.html`.
+- **Mailing Lists / list_index** - the Postorius section (URL `mailman3/`). Site root `""` redirects to `list_index`; the "Home Page" mockups map here.
+- **Component token** - a CSS custom property scoped to a single component (e.g. `--wg21-table-fs`, `--wg21-hero-fs-title`), as opposed to a global token (e.g. `--wg21-fs-body`). Named `--wg21-<component>-*`. Defined in `theme.css`, consumed in `components.css`.
+- **Fluid base font-size** - a per-component base `font-size` declared as `clamp(min, N cqi, max)` where `max` is the current desktop value. Inner text and paddings are expressed in `em` relative to this base, so padding "respects" font-size and the whole component shrinks gracefully on narrower containers without shrinking the desktop max. Applies to simple components (table, buttons, toolbar, footer); the hero is an exception with independent per-role clamps.
+- **Containment context (component)** - a component root that declares `container-type: inline-size`, causing `cqi` inside it to resolve against that root's inline width. Enables per-component fluid scaling: a component placed in a narrower column scales by its own box, not the viewport.
