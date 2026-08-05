@@ -15,7 +15,8 @@
   ansible.builtin.git:
     repo: 'https://github.com/cppalliance/wg21-mailman.git'
     dest: /opt/github/ansible-managed/wg21-mailman
-    # version: 
+    # Branch to check out from https://github.com/cppalliance/wg21-mailman
+    version: "{{ mailman3_wg21_branch | default('master') }}"
 
 - name: Copy wg21 static files
   ansible.builtin.copy:
