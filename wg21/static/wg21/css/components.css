@@ -224,22 +224,34 @@
    Hero
    ============================================================ */
 .wg21-hero {
-  /* Base weight for the double gold frame. The whole frame derives from this:
-   *   outer gold line = 2× weight   (edge of the hero)
-   *   surface band    = 3× weight   (shows --wg21-surface between the lines)
-   *   inner gold line = 1× weight
-   * The frame is drawn on a single ::before overlay so both gold lines share
-   * one border-radius + corner-shape and can never drift out of alignment. */
-  --wg21-frame-gold-width: 3px;
-  --wg21-frame-inset: calc(var(--wg21-frame-gold-width) * 3);
+  /* Scooped double gold frame knobs (see .wg21-hero__frame* below).
+   * Outer and inner strokes are independent — tune each freely.
+   * To keep them from touching: inner inset >= outer inset + outer width.
+   *
+   * --wg21-hero-frame-inner-radius auto-tracks the outer stroke's inner
+   * corner, accounting for both stroke widths:
+   *   inner r = outer r - (inner inset - outer inset)
+   *             + outer width - inner width
+   * Keep insets unit-bearing (0px, not 0) so the calc stays valid. */
+  --wg21-hero-frame-outer-inset: 0px;
+  --wg21-hero-frame-outer-width: 4px;
+  --wg21-hero-frame-outer-radius: 24px;
+  --wg21-hero-frame-outer-color: var(--wg21-gold-border);
+  --wg21-hero-frame-inner-inset: 6px;
+  --wg21-hero-frame-inner-width: 2px;
+  --wg21-hero-frame-inner-radius: calc(
+    var(--wg21-hero-frame-outer-radius)
+    - (var(--wg21-hero-frame-inner-inset) - var(--wg21-hero-frame-outer-inset))
+    + var(--wg21-hero-frame-outer-width)
+    - var(--wg21-hero-frame-inner-width)
+  );
+  --wg21-hero-frame-inner-color: var(--wg21-gold-border);
 
   position: relative;
   container-type: inline-size;
   container-name: wg21-hero;
   margin: var(--wg21-space-6) 0;
   background-color: var(--wg21-surface);
-  border-radius: var(--wg21-scoop);
-  corner-shape: scoop;
 
   display: grid;
   grid-template-columns: 1.5fr 5px 1fr;
@@ -252,24 +264,127 @@
     margin-block: var(--wg21-hero-emblem-pad);
 }
 
-/* Single overlay that paints the entire frame on top of the grid content:
- *   border      -> outer gold line
- *   box-shadow  -> opaque surface band (hides the emblem bleed at every corner)
- *   outline     -> inner gold line
- * Its transparent center lets the content show through; pointer-events: none
- * keeps links clickable. */
-.wg21-hero::before {
-  content: "";
+/* Scooped stroke mask — ported verbatim from wg21.org .slim-banner-frame /
+ * .banner-frame. Shared stack; per-span overrides set inset / --bw / --r /
+ * --aa / background. Real <span>s (not ::before/::after) so Chromium keeps
+ * all four corner arcs. */
+.wg21-hero__frame,
+.wg21-hero__frame-inner {
+  /* Span the full grid so absolute frames don't steal auto-placement cells. */
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  position: absolute;
+  --aa: 0.5px;
+  --ov: 1px;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position:
+    50% 0, 50% 100%, 0 50%, 100% 50%, 0 0, 100% 0, 0 100%, 100% 100%;
+          mask-position:
+    50% 0, 50% 100%, 0 50%, 100% 50%, 0 0, 100% 0, 0 100%, 100% 100%;
+  -webkit-mask-size:
+    calc(100% - 2 * var(--r) + 2 * var(--ov)) var(--bw),
+    calc(100% - 2 * var(--r) + 2 * var(--ov)) var(--bw),
+    var(--bw) calc(100% - 2 * var(--r) + 2 * var(--ov)),
+    var(--bw) calc(100% - 2 * var(--r) + 2 * var(--ov)),
+    var(--r) var(--r), var(--r) var(--r), var(--r) var(--r), var(--r) var(--r);
+          mask-size:
+    calc(100% - 2 * var(--r) + 2 * var(--ov)) var(--bw),
+    calc(100% - 2 * var(--r) + 2 * var(--ov)) var(--bw),
+    var(--bw) calc(100% - 2 * var(--r) + 2 * var(--ov)),
+    var(--bw) calc(100% - 2 * var(--r) + 2 * var(--ov)),
+    var(--r) var(--r), var(--r) var(--r), var(--r) var(--r), var(--r) var(--r);
+  -webkit-mask-image:
+    linear-gradient(#000, #000), linear-gradient(#000, #000),
+    linear-gradient(#000, #000), linear-gradient(#000, #000),
+    radial-gradient(circle at 0 0, #0000 calc(var(--r) - var(--bw) - var(--aa)), #000 calc(var(--r) - var(--bw) + var(--aa)) calc(var(--r) - var(--aa)), #0000 var(--r)),
+    radial-gradient(circle at 100% 0, #0000 calc(var(--r) - var(--bw) - var(--aa)), #000 calc(var(--r) - var(--bw) + var(--aa)) calc(var(--r) - var(--aa)), #0000 var(--r)),
+    radial-gradient(circle at 0 100%, #0000 calc(var(--r) - var(--bw) - var(--aa)), #000 calc(var(--r) - var(--bw) + var(--aa)) calc(var(--r) - var(--aa)), #0000 var(--r)),
+    radial-gradient(circle at 100% 100%, #0000 calc(var(--r) - var(--bw) - var(--aa)), #000 calc(var(--r) - var(--bw) + var(--aa)) calc(var(--r) - var(--aa)), #0000 var(--r));
+          mask-image:
+    linear-gradient(#000, #000), linear-gradient(#000, #000),
+    linear-gradient(#000, #000), linear-gradient(#000, #000),
+    radial-gradient(circle at 0 0, #0000 calc(var(--r) - var(--bw) - var(--aa)), #000 calc(var(--r) - var(--bw) + var(--aa)) calc(var(--r) - var(--aa)), #0000 var(--r)),
+    radial-gradient(circle at 100% 0, #0000 calc(var(--r) - var(--bw) - var(--aa)), #000 calc(var(--r) - var(--bw) + var(--aa)) calc(var(--r) - var(--aa)), #0000 var(--r)),
+    radial-gradient(circle at 0 100%, #0000 calc(var(--r) - var(--bw) - var(--aa)), #000 calc(var(--r) - var(--bw) + var(--aa)) calc(var(--r) - var(--aa)), #0000 var(--r)),
+    radial-gradient(circle at 100% 100%, #0000 calc(var(--r) - var(--bw) - var(--aa)), #000 calc(var(--r) - var(--bw) + var(--aa)) calc(var(--r) - var(--aa)), #0000 var(--r));
+  pointer-events: none;
+}
+
+/* Surface-coloured gap ring behind outer gold (outer width + gap channel). */
+.wg21-hero__frame-gap {
+  inset: var(--wg21-hero-frame-outer-inset);
+  --bw: max(
+    0px,
+    calc(
+      var(--wg21-hero-frame-inner-inset) - var(--wg21-hero-frame-outer-inset)
+    )
+  );
+  --r: var(--wg21-hero-frame-outer-radius);
+  --aa: 0.5px;
+  --ov: 1px;
+  background: var(--wg21-surface);
+  z-index: 2;
+}
+
+/* Page-bg quarter-disks at scooped corners; above gap ring, below gold strokes. */
+.wg21-hero__frame-scoop {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
   position: absolute;
   inset: 0;
-  z-index: 1;
   pointer-events: none;
-  border: calc(var(--wg21-frame-gold-width) * 1.5) solid var(--wg21-frame-color);
-  outline: var(--wg21-frame-gold-width) solid var(--wg21-frame-color);
-  outline-offset: calc(var(--wg21-frame-inset) * -1);
-  box-shadow: inset 0 0 0 calc(var(--wg21-frame-gold-width) * 2) var(--wg21-surface);
-  border-radius: var(--wg21-scoop);
-  corner-shape: scoop;
+  z-index: 3;
+  background: var(--wg21-page-bg);
+  --scoop-r: max(
+    0px,
+    calc(
+      var(--wg21-hero-frame-outer-radius) - var(--wg21-hero-frame-outer-width)
+    )
+  );
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0, 100% 0, 0 100%, 100% 100%;
+          mask-position: 0 0, 100% 0, 0 100%, 100% 100%;
+  -webkit-mask-size:
+    var(--wg21-hero-frame-outer-radius) var(--wg21-hero-frame-outer-radius);
+          mask-size:
+    var(--wg21-hero-frame-outer-radius) var(--wg21-hero-frame-outer-radius);
+  -webkit-mask-image:
+    radial-gradient(circle at 0 0, #000 var(--scoop-r), #0000 calc(var(--scoop-r) + 0.5px)),
+    radial-gradient(circle at 100% 0, #000 var(--scoop-r), #0000 calc(var(--scoop-r) + 0.5px)),
+    radial-gradient(circle at 0 100%, #000 var(--scoop-r), #0000 calc(var(--scoop-r) + 0.5px)),
+    radial-gradient(circle at 100% 100%, #000 var(--scoop-r), #0000 calc(var(--scoop-r) + 0.5px));
+          mask-image:
+    radial-gradient(circle at 0 0, #000 var(--scoop-r), #0000 calc(var(--scoop-r) + 0.5px)),
+    radial-gradient(circle at 100% 0, #000 var(--scoop-r), #0000 calc(var(--scoop-r) + 0.5px)),
+    radial-gradient(circle at 0 100%, #000 var(--scoop-r), #0000 calc(var(--scoop-r) + 0.5px)),
+    radial-gradient(circle at 100% 100%, #000 var(--scoop-r), #0000 calc(var(--scoop-r) + 0.5px));
+}
+
+/* Outer gold stroke — slim-banner .slim-banner-frame geometry, strokes bumped
+ * for visual consistency with the framed table below (4.57px gold borders).
+ * --bw / --r / --aa / --ov are the mask formula's internal params (above);
+ * feed them from the descriptive --wg21-hero-frame-* knobs on .wg21-hero. */
+.wg21-hero__frame:not(.wg21-hero__frame-gap) {
+  inset: var(--wg21-hero-frame-outer-inset);
+  --bw: var(--wg21-hero-frame-outer-width);
+  --r: var(--wg21-hero-frame-outer-radius);
+  --aa: 0.5px;
+  --ov: 1px;
+  background: var(--wg21-hero-frame-outer-color);
+  z-index: 4;
+}
+
+/* Inner 50% gold hairline — fully independent knobs (see .wg21-hero). */
+.wg21-hero__frame-inner {
+  inset: var(--wg21-hero-frame-inner-inset);
+  --bw: var(--wg21-hero-frame-inner-width);
+  --r: var(--wg21-hero-frame-inner-radius);
+  --aa: 0.2px;
+  --ov: 1px;
+  background: var(--wg21-hero-frame-inner-color);
+  z-index: 4;
 }
 
 .wg21-hero__content {
@@ -303,7 +418,7 @@
     grid-template-columns: 1fr;
   }
   .wg21-hero__content {
-    --wg21-hero-pad: 36px 28px;
+    --wg21-hero-pad: 36px;
   }
   .wg21-hero__emblem,
   .wg21-hero .wg21-divider {
@@ -363,6 +478,10 @@
 .wg21-hero--compact .wg21-eyebrow { display: none; }
 
 @media (max-width: 768px) {
+  .wg21-hero--compact {
+    grid-template-columns: 1fr;
+  }
+
   .wg21-hero--compact .wg21-hero__content {
     order: 1;
   }

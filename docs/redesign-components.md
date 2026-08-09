@@ -62,9 +62,10 @@ Anatomy -> class / partial -> variants -> consumer.
 - Utility bar (black top strip), links active=gold -> partial `wg21/utility_bar.html`, `.wg21-utilitybar`, `.wg21-utilitybar__link--active` -> both base templates. Links use placeholder URLs (`https://example.com`) for now.
 - Primary navbar (navy gradient): emblem + wordmark, breadcrumb chevron, search, avatar -> partial `wg21/navbar.html` (params: brand_url, breadcrumb_label, show_search, search_action, user) -> both base templates.
 - Gold rule / divider -> `.wg21-rule--gold`.
-- Ornamental frame (gold double border + Greek-key corners) -> `.wg21-frame` (+ `--marble`) + markup skeleton -> hero card, table panel.
-- Hero - title variant (emblem + serif title + subtitle) -> partial `wg21/hero_title.html` -> HyperKitty index, Postorius list_index (logged-in).
-- Hero - CTA variant (eyebrow + title + email input + SIGN UP + link + emblem) -> partial `wg21/hero_cta.html` -> Postorius list_index (anonymous). NOTE: SIGN UP wiring is deferred feature work.
+- Ornamental frame (gold double border + Greek-key corners) -> `.wg21-frame` (+ `--marble`) + markup skeleton -> **table panel** (not yet shipped on hero).
+- Hero scooped double-gold frame -> partial `wg21/hero_frame.html`; spans `.wg21-hero__frame-scoop` (page-bg corner covers), `.wg21-hero__frame-gap` (surface gap ring), `.wg21-hero__frame` (outer stroke), `.wg21-hero__frame-inner` (inner hairline). Corners are **scoop** (concave), not Greek-key; stroke colour is `--wg21-gold-border`. Knobs on `.wg21-hero`: `--wg21-hero-frame-*`. -> Postorius `index.html`, HyperKitty `index.html` (via `{% include 'wg21/hero_frame.html' %}`).
+- Hero - title variant (emblem + serif title + subtitle) -> inline markup in each app's `index.html` + `wg21/hero_emblem.html` (not yet split into `wg21/hero_title.html`) -> HyperKitty index, Postorius list_index (logged-in).
+- Hero - CTA variant (eyebrow + title + email input + SIGN UP + link + emblem) -> inline markup in Postorius `index.html` (not yet split into `wg21/hero_cta.html`) -> Postorius list_index (anonymous). NOTE: SIGN UP wiring is deferred feature work.
 - Eyebrow label (gold rule + uppercase) -> `.wg21-eyebrow`.
 - Filter toolbar - BOTH variants:
   - (a) segmented role tabs (Owner/Moderator/Member/Non-Member/All) -> `.wg21-segmented` (+ `.wg21-toolbar__label` gold pill). Role filtering is deferred feature work; ships as static shell first.
@@ -96,8 +97,8 @@ These may ship as non-functional static shells styled with the components above,
 Provided files (to be copied into repo static at `wg21/static/wg21/img/`, deploying to `static_custom/wg21/img/`):
 
 - Emblem (envelope + laurel + WG21 wordmark) -> `wg21/img/emblem.png`. Used by `wg21/emblem.html` at nav/hero sizes. (SVG version desirable later for crisp scaling.)
-- Greek-key meander strip -> `wg21/img/greek-key.svg`. Used as repeating side/corner ornament for `.wg21-frame`.
-- Marble surface -> `wg21/img/marble-bg.png`. Used by `.wg21-frame--marble` hero + `.wg21-footer`.
+- Greek-key meander strip -> `wg21/img/greek-key.svg`. Used as repeating side/corner ornament for `.wg21-frame` **table panel** (not used by the hero scooped frame).
+- Marble surface -> `wg21/img/marble-bg.png` / `hero-marble.png`. Used by `.wg21-hero__emblem` (marble panel) + `.wg21-footer`; not used as a frame ornament on the hero border.
 - FLAG: the delivered `marble-bg` sample has decorative Greek-key arcs + a centered framed emblem baked in - confirm whether it's the full hero background art or a tileable texture; a clean arc-free marble tile may be wanted for the footer.
 
 
