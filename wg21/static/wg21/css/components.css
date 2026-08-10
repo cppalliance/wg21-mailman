@@ -529,7 +529,7 @@
 }
 .wg21-btn--gold {
     --wg21-btn-bg: var(--wg21-gold-bright);
-    --wg21-btn-color: var(--wg21-on-gold);
+    --wg21-btn-color: var(--wg21-white);
     --wg21-btn-border: var(--wg21-gold-dark);
     --wg21-btn-hover-bg: var(--wg21-gold-dark);
     --wg21-btn-hover-color: var(--wg21-white);
@@ -582,7 +582,7 @@
 }
 .wg21-toolbar__label {
     background: var(--wg21-gold);
-    color: var(--wg21-on-gold);
+    color: var(--wg21-white);
     font-weight: 700;
     padding: var(--wg21-space-1) var(--wg21-space-4);
     border-radius: var(--wg21-radius-sm);
