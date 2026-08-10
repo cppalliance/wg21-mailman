@@ -74,7 +74,7 @@
                               {{ last_update|datetime_parse|date:"D M j, g:i a" }}
                             </td>
                             <td data-label="{% trans 'Actions' %}" class="wg21-table__actions">
-                                <a href="{% url 'list_summary' list_id=list.list_id %}" class="wg21-btn wg21-btn--primary">{% trans 'View' %}</a>
+                                <a href="{% url 'hk_list_overview' mlist_fqdn=list.fqdn_listname %}" class="wg21-btn wg21-btn--primary">{% trans 'View' %}</a>
                                 <a href="{% url 'list_summary' list_id=list.list_id %}" class="wg21-btn wg21-btn--outline">{% trans 'Subscribe' %}</a>
                             </td>
                         </tr>
