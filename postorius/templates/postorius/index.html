@@ -75,7 +75,7 @@
                             </td>
                             <td data-label="{% trans 'Actions' %}" class="wg21-table__actions">
                                 <a href="{% url 'list_summary' list_id=list.list_id %}" class="wg21-btn wg21-btn--primary">{% trans 'View' %}</a>
-                                <a href="{% url 'list_subscribe' list_id=list.list_id %}" class="wg21-btn wg21-btn--outline">{% trans 'Subscribe' %}</a>
+                                <a href="{% url 'list_summary' list_id=list.list_id %}" class="wg21-btn wg21-btn--outline">{% trans 'Subscribe' %}</a>
                             </td>
                         </tr>
                     {% endfor %}
