@@ -516,7 +516,6 @@
     border: 3px solid var(--wg21-btn-border, var(--wg21-gold-border));
     cursor: pointer;
     text-decoration: none;
-    min-width: 10rem;
     background: var(--wg21-btn-bg);
     color: var(--wg21-btn-color);
 }
@@ -561,6 +560,11 @@
 .wg21-table tbody tr:hover :is(a, button):is(.wg21-btn.wg21-btn):hover {
     background: var(--wg21-btn-hover-bg, var(--wg21-btn-bg));
     color: var(--wg21-btn-hover-color, var(--wg21-btn-color));
+}
+
+.all-lists table.lists.wg21-table td:last-child {
+  border-block-start: none;
+  border-inline-end: none;
 }
 
 /* Email input (light) */
@@ -711,7 +715,6 @@ table.lists.wg21-table tbody tr.list:hover a:not(.wg21-btn) {
 .wg21-table .wg21-table__name { font-weight: 500; color: var(--wg21-ink); }
 .wg21-table .wg21-table__name:hover { color: var(--wg21-ink); }
 .wg21-table .wg21-table__desc { color: var(--wg21-muted); }
-.wg21-table__actions { display: flex; gap: var(--wg21-space-3); justify-content: flex-end; }
 
 /* Greek-key side rails on the panel */
 .wg21-panel--ornate { padding: 0 50px; }
