@@ -2,8 +2,17 @@
 {% comment %} Shared marble footer. {% endcomment %}
 <footer class="wg21-footer">
     <div class="wg21-footer__inner">
-        <a href="https://example.com" class="wg21-footer__source">{% trans 'Source information website?' %}</a>
-        <span class="wg21-footer__center">{% trans 'Footer nonsense. Footer nonsense. Footer nonsense.' %}</span>
-        <span class="wg21-footer__rights">{% trans 'All Rights Reserved' %}</span>
+        <span class="wg21-footer__center">
+            {% blocktrans trimmed %}
+            This site is not affiliated with WG21 or ISO. This site is an independent project by the
+            <a href="https://cppalliance.org" target="_blank" rel="noopener noreferrer">C++ Alliance</a>.
+            {% endblocktrans %}
+        </span>
+        <span class="wg21-footer__rights">
+          {% now "Y" as current_year %}
+          {% blocktrans trimmed %}
+          © {{ current_year }} All rights reserved.
+          {% endblocktrans %}
+        </span>
     </div>
 </footer>
