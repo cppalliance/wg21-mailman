@@ -1,4 +1,4 @@
-{% load i18n gravatar %}
+{% load i18n gravatar static %}
 {% comment %}
     Shared WG21 primary navbar (navy gradient, gold rule, emblem + wordmark +
     breadcrumb + optional search + avatar). Used by both Postorius and
@@ -76,7 +76,17 @@
                     data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false"
                     aria-label="{% trans 'Account menu' %}">
-                {% gravatar user.email 30 %}
+                {% if user.is_authenticated %}
+                    {% gravatar user.email 34 %}
+                {% else %}
+                    <img
+                      src="{% static 'wg21/img/user_circle.svg' %}"
+                      alt="{% trans 'User avatar' %}"
+                      width="44"
+                      height="44"
+                      class="wg21-avatar-default"
+                    />
+                {% endif %}
             </button>
             <div class="dropdown-menu dropdown-menu-end">
                 {% if user.is_authenticated %}

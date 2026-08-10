@@ -119,13 +119,22 @@
     height: 38px;
     border-radius: var(--wg21-radius-pill);
     background: var(--wg21-gold);
-    color: var(--wg21-on-gold);
+    color: var(--wg21-gold-border);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border: none;
+
+    &:hover,
+    &:focus,
+    &[aria-expanded="true"] {
+      color: var(--wg21-gold-border);
+    }
 }
-.wg21-navbar .gravatar { border: 2px solid var(--wg21-gold); }
+
+.wg21-navbar .wg21-avatar-default, .wg21-navbar .gravatar {
+  margin-left: 12px;
+}
 
 /* Dropdown menus that live inside the navbar (avatar/account menu) sit on a
  * white surface, so opt them out of the navbar's on-navy link color. */
