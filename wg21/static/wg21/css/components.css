@@ -597,6 +597,9 @@
     font-family: var(--wg21-font-body);
     font-size: var(--wg21-toolbar-fs);
 }
+.wg21-toolbar--empty {
+  border-bottom: 1px solid var(--wg21-gold);
+}
 .wg21-toolbar__label {
     background: var(--wg21-gold);
     color: var(--wg21-white);

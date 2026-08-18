@@ -24,7 +24,7 @@
 
     {# --- Toolbar (variant a: segmented role tabs) --- #}
     {% if user.is_authenticated or user.is_superuser %}
-    <div class="wg21-toolbar">
+    <div class="wg21-toolbar {% if lists|length == 0 %}wg21-toolbar--empty{% endif %}">
         {% if user.is_authenticated %}
         <span class="wg21-toolbar__label">{% trans 'Role' %}</span>
         <ul class="wg21-segmented">
