@@ -26,7 +26,7 @@
 {% trans 'Logout' as logout_label %}
 <nav class="navbar navbar-expand-md wg21-navbar" id="navbar-main">
     <div class="container-fluid wg21-navbar__inner">
-        <div class="navbar-header d-flex align-items-center">
+        <div class="navbar-header d-flex align-items-center gap-2">
             {% if search_action %}
                 <button type="button" class="navbar-toggler collapsed"
                         data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
@@ -41,7 +41,7 @@
                 <span class="wg21-navbar__wordmark">{% trans 'Mailing Lists' %}</span>
             </a>
             {% if breadcrumb_label %}
-                <span class="wg21-breadcrumb ms-2">{{ breadcrumb_label }}</span>
+                <span class="wg21-breadcrumb">{{ breadcrumb_label }}</span>
             {% endif %}
         </div>
 
@@ -49,6 +49,20 @@
 
         {% if search_action %}
             <div class="navbar-collapse collapse justify-content-end">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-end gap-2 w-100 my-2 my-md-0">
+                {% if 'postorius' in INSTALLED_APPS %}
+                    {% if mlist %}
+                    <a href="{% url 'list_summary' mlist.list_id %}" class="nav-link">
+                        <span class="fa fa-cog"></span>
+                        {% trans 'Manage this list' %}
+                    </a>
+                    {% else %}
+                    <a href="{% url 'list_index' %}" class="nav-link">
+                        <span class="fa fa-cog"></span>
+                        {% trans 'Manage lists' %}
+                    </a>
+                    {% endif %}
+                {% endif %}
                 <form name="search" method="get" action="{% url search_action %}"
                       class="navbar-form navbar-right my-2 my-lg-2 ms-2" role="search">
                     {% if mlist %}<input type="hidden" name="mlist" value="{{ mlist.name }}" />{% endif %}
@@ -67,6 +81,7 @@
                         </button>
                     </div>
                 </form>
+                </div>
             </div>
         {% endif %}
 

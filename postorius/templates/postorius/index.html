@@ -59,7 +59,7 @@
                 </thead>
                 <tbody>
                     {% for list in lists %}
-                        <tr>
+                        <tr class="wg21-row-link" data-href="{% url 'list_summary' list_id=list.list_id %}">
                             <td data-label="{% trans 'List name' %}">
                                 <a href="{% url 'list_summary' list_id=list.list_id %}" class="wg21-table__name">{{ list.display_name }}</a>
                                 {% if check_advertised %}
@@ -96,3 +96,19 @@
     {% endif %}
 
 {% endblock content %}
+
+{% block additionaljs %}
+{{ block.super }}
+<script>
+    // Make table rows clickable (mirrors the row-click redirect on the
+    // HyperKitty archives index). Clicks on real links/buttons still win.
+    document.querySelectorAll('tr.wg21-row-link[data-href]').forEach(function (row) {
+        row.addEventListener('click', function (event) {
+            if (event.target.closest('a, button')) {
+                return;
+            }
+            window.location = row.dataset.href;
+        });
+    });
+</script>
+{% endblock %}

@@ -67,7 +67,7 @@
 .wg21-navbar__brand {
     display: flex;
     align-items: center;
-    gap: var(--wg21-space-3);
+    gap: var(--wg21-space-2);
     text-decoration: none;
 }
 .wg21-navbar__brand img {
@@ -483,6 +483,10 @@
     --wg21-hero-fs-subtitle: clamp(1.5rem, 1.6cqi, 2rem);
 
     grid-template-columns: 1fr 5px 2fr;
+
+    .wg21-hero__logo {
+      max-width: 180px;
+    }
 }
 .wg21-hero--compact .wg21-eyebrow { display: none; }
 
@@ -590,7 +594,7 @@
     border: 1px solid var(--wg21-gold);
     border-bottom: none;
     padding: var(--wg21-toolbar-pad-y) var(--wg21-toolbar-pad-x);
-    font-family: var(--wg21-font-serif);
+    font-family: var(--wg21-font-body);
     font-size: var(--wg21-toolbar-fs);
 }
 .wg21-toolbar__label {
@@ -660,6 +664,9 @@
   background-color: var(--wg21-surface);
 }
 
+/* Clickable rows (row-click redirect, see postorius index script) */
+.wg21-table tbody tr.wg21-row-link { cursor: pointer; }
+
 /* Canonical row hover — applies to both apps */
 .wg21-table tbody tr:hover {
     background-color: var(--wg21-surface);
@@ -707,7 +714,6 @@ table.lists.wg21-table tbody tr.list:hover a:not(.wg21-btn) {
     border-bottom: 2px solid var(--wg21-border);
     background: transparent;
     vertical-align: middle;
-    color: var(--wg21-muted);
     font-weight: 400;
     text-wrap: balance;
 }
@@ -801,6 +807,13 @@ html { font-size: 16px; }                       /* undo _hyperkitty-base.scss */
    to stay in the template. Selectors here match or exceed the
    specificity of the SCSS ones and always load after them.
    ============================================================ */
+/* Header cells: beat `.all-lists table.lists th` (0,2,2) from the SCSS,
+ * which forces color:#999 and font-size:small. */
+.wg21-listing table.lists.wg21-table thead th {
+    text-transform: none;
+    color: var(--wg21-on-navy);
+    font-size: var(--wg21-table-fs-head);
+}
 .wg21-listing .wg21-table tbody tr.private,
 .wg21-listing .wg21-table tbody tr.inactive { background: transparent; }
 .wg21-listing .wg21-table tbody tr.inactive .wg21-table__name { color: var(--wg21-muted); }
@@ -836,7 +849,10 @@ html { font-size: 16px; }                       /* undo _hyperkitty-base.scss */
    Responsive: collapse framed table to stacked blocks < md
    ============================================================ */
 @media (max-width: 767.98px) {
-    .wg21-navbar .wg21-navbar__inner { flex-wrap: wrap; }
+    .wg21-navbar .wg21-navbar__inner {
+      flex-wrap: wrap;
+      padding: var(--wg21-space-2) var(--wg21-space-6) var(--wg21-space-2) var(--wg21-space-2);
+    }
     .wg21-panel--ornate { padding: 0; }
     .wg21-panel--ornate::before, .wg21-panel--ornate::after { display: none; }
     .wg21-table thead { display: none; }

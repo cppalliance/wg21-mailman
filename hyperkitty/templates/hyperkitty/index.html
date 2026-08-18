@@ -82,10 +82,12 @@ wg21/css/components.css (see the "HyperKitty listing overrides" block).
                     <td class="wg21-table__desc" data-label="{% trans 'Description' %}">
                         {{ mlist.description|default_if_none:"" }}
                     </td>
-                    <td data-label="{% trans 'Last Updated' %}">{{ mlist.last_updated }}</td>
+                    <td data-label="{% trans 'Last Updated' %}">
+                      {{ mlist.recent_threads.0.date_active }}
+                    </td>
                     <td data-label="{% trans 'Actions' %}" class="wg21-table__actions">
                         <a href="{% url 'hk_list_overview' mlist_fqdn=mlist.name %}" class="wg21-btn wg21-btn--primary">{% trans 'View' %}</a>
-                        <a href="{% url 'list_summary' list_id=mlist.list_id %}" class="wg21-btn wg21-btn--outline">{% trans 'Subscribe' %}</a>
+                        <a href="{% url 'list_summary' list_id=mlist.name %}" class="wg21-btn wg21-btn--outline">{% trans 'Subscribe' %}</a>
                     </td>
                 </tr>
             {% endfor %}
