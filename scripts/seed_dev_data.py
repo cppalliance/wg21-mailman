@@ -33,7 +33,9 @@ from django_mailman3.lib.mailman import get_mailman_client  # noqa: E402
 
 from hyperkitty.lib.analysis import compute_thread_order_and_depth  # noqa: E402
 from hyperkitty.lib.incoming import DuplicateMessage, add_to_list  # noqa: E402
+from hyperkitty.lib.mailman import import_list_from_mailman  # noqa: E402
 from hyperkitty.models import (  # noqa: E402
+    ArchivePolicy,
     Email,
     Favorite,
     LastView,
@@ -92,7 +94,13 @@ LIST_META = {
     "cpp": ("C++", "Language and library topics"),
     "boost": ("Boost", "Boost libraries discussion"),
     "test": ("Test", "Sandbox list for UI experiments"),
+    "committee": ("Committee (Private)", "Private working-group discussion"),
+    "idle": ("Idle", "Archived list with no recent activity"),
 }
+
+# Local parts (without @domain) used to exercise HyperKitty index filters.
+PRIVATE_LIST_PARTS = frozenset({"committee"})
+INACTIVE_LIST_PARTS = frozenset({"idle"})
 
 DEMO_USERNAME = "demo"
 DEMO_PASSWORD = "demo"
@@ -159,9 +167,12 @@ def ensure_users() -> list:
             "first_name": "Demo",
             "last_name": "User",
             "is_staff": True,
+            "is_superuser": True,
         },
     )
     demo.set_password(DEMO_PASSWORD)
+    if not demo.is_superuser:
+        demo.is_superuser = True
     demo.save()
     EmailAddress.objects.update_or_create(
         user=demo,
@@ -174,8 +185,47 @@ def ensure_users() -> list:
     return users
 
 
+def list_local_part(list_addr: str) -> str:
+    return list_addr.split("@", 1)[0]
+
+
+def configure_mailman_archive_policy(list_addr: str, policy: str) -> None:
+    """Best-effort mirror of archive_policy into Mailman Core."""
+    try:
+        mm_list = get_mailman_client().get_list(list_addr)
+    except (HTTPError, MailmanConnectionError, OSError) as exc:
+        print(f"  ! Could not set archive_policy={policy} on {list_addr}: {exc}")
+        return
+    try:
+        mm_list.settings["archive_policy"] = policy
+        mm_list.save()
+    except (HTTPError, MailmanConnectionError, OSError) as exc:
+        print(f"  ! Mailman rejected archive_policy={policy} on {list_addr}: {exc}")
+
+
+def mark_list_private(list_addr: str, users: list | None = None) -> None:
+    """Ensure HyperKitty treats the list as private (index hide-switch demo)."""
+    configure_mailman_archive_policy(list_addr, "private")
+    try:
+        mlist = MailingList.objects.get(name=list_addr)
+    except MailingList.DoesNotExist:
+        return
+    mlist.archive_policy = ArchivePolicy.private.value
+    mlist.save(update_fields=["archive_policy"])
+    if users is None:
+        return
+    demo = next((u for u in users if u.username == DEMO_USERNAME), None)
+    if demo is None:
+        return
+    try:
+        mm_list = get_mailman_client().get_list(list_addr)
+        mm_list.subscribe(demo.email)
+    except (HTTPError, MailmanConnectionError, OSError) as exc:
+        print(f"  ! Could not subscribe {demo.email} to {list_addr}: {exc}")
+
+
 def decorate_mailing_list(list_addr: str) -> None:
-    list_name = list_addr.split("@", 1)[0]
+    list_name = list_local_part(list_addr)
     display, description = LIST_META.get(
         list_name, (list_name.title(), f"Archive for {list_addr}")
     )
@@ -184,6 +234,12 @@ def decorate_mailing_list(list_addr: str) -> None:
     mlist.description = description
     mlist.subject_prefix = f"[{list_name}] "
     mlist.save()
+
+
+def ensure_inactive_list(list_addr: str) -> None:
+    """Register a list in HyperKitty with no threads (inactive filter demo)."""
+    import_list_from_mailman(list_addr)
+    decorate_mailing_list(list_addr)
 
 
 def authors_for_thread(msg_count: int) -> list[tuple[str, str]]:
@@ -410,7 +466,8 @@ def main() -> int:
         "--lists",
         default=os.environ.get(
             "SEED_LISTS",
-            "delegates,paper-reviews,general,dev,announce,cpp,boost,test",
+            "delegates,paper-reviews,general,dev,announce,cpp,boost,test,"
+            "committee,idle",
         ),
         help="Comma-separated local parts (without @domain)",
     )
@@ -449,8 +506,19 @@ def main() -> int:
     total_skipped = 0
     total_enrich = {"votes": 0, "tags": 0, "favorites": 0, "last_views": 0}
     for list_addr in list_names:
-        print(f"Seeding {list_addr} ({args.threads} threads x {args.replies} messages)...")
-        created, skipped = seed_list(list_addr, args.threads, args.replies)
+        local_part = list_local_part(list_addr)
+        if local_part in INACTIVE_LIST_PARTS:
+            print(f"Seeding {list_addr} (inactive — no messages)...")
+            ensure_inactive_list(list_addr)
+            created, skipped = 0, 0
+        else:
+            print(
+                f"Seeding {list_addr} ({args.threads} threads x "
+                f"{args.replies} messages)..."
+            )
+            created, skipped = seed_list(list_addr, args.threads, args.replies)
+            if local_part in PRIVATE_LIST_PARTS:
+                mark_list_private(list_addr, users)
         total_created += created
         total_skipped += skipped
         print(f"  +{created} messages ({skipped} skipped as duplicates)")

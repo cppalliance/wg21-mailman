@@ -5,7 +5,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 DOMAIN="${MAILMAN_DOMAIN:-lists.example.com}"
-LIST_PARTS="${SEED_LISTS:-delegates,paper-reviews,general,dev,announce,cpp,boost,test}"
+LIST_PARTS="${SEED_LISTS:-delegates,paper-reviews,general,dev,announce,cpp,boost,test,committee,idle}"
 THREADS="${SEED_THREADS:-12}"
 REPLIES="${SEED_REPLIES:-5}"
 

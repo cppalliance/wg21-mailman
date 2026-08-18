@@ -33,7 +33,7 @@ wg21/css/components.css (see the "HyperKitty listing overrides" block).
     </header>
 
     {# --- Toolbar (variant b: hide switches + find + sort) --- #}
-    <div class="wg21-toolbar">
+    <div class="wg21-toolbar filter-lists">
         {% if all_lists %}
         <p class="hide-switches m-0">
             <label class="wg21-check"><input type="checkbox" value="inactive" {% if show_inactive %}checked="checked"{% endif %}/> {% trans "Hide inactive" %}</label>
@@ -102,4 +102,13 @@ wg21/css/components.css (see the "HyperKitty listing overrides" block).
 
 </div> <!-- /all-lists -->
 
+{% endblock %}
+
+{% block additionaljs %}
+{{ block.super }}
+<script>
+    $(function() {
+        setup_index("{% url 'hk_list_recent_activity' 'PLACEHOLDER@PLACEHOLDER' %}");
+    });
+</script>
 {% endblock %}
