@@ -1,0 +1,114 @@
+{% extends "postorius/base.html" %}
+{% load i18n %}
+{% load pagination %}
+{% load date_helpers %}
+
+{% load static %}
+{% block head_title %}
+{% trans 'List Index' %} - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+
+    {# --- Hero header --- #}
+    <header class="wg21-hero">
+      {% include 'wg21/hero_frame.html' %}
+      <div class="wg21-hero__content">
+        <span class="wg21-eyebrow">{% trans 'Official Communication Service' %}</span>
+        <h1 class="wg21-hero__title">{% trans 'WG21.org Mailing Lists' %}</h1>
+        <p class="wg21-hero__subtitle">{% trans 'Subscribe to your list preferences' %}</p>
+      </div>
+      <div class="wg21-divider" aria-hidden="true"></div>
+      {% include 'wg21/hero_emblem.html' %}
+    </header>
+
+    {# --- Toolbar (variant a: segmented role tabs) --- #}
+    {% if user.is_authenticated or user.is_superuser %}
+    <div class="wg21-toolbar {% if lists|length == 0 %}wg21-toolbar--empty{% endif %}">
+        {% if user.is_authenticated %}
+        <span class="wg21-toolbar__label">{% trans 'Role' %}</span>
+        <ul class="wg21-segmented">
+            <li><a href="?role=owner" {% if role == 'owner' or not all_lists and not role %}class="active"{% endif %}>{% trans 'Owner' %}</a></li>
+            <li><a href="?role=moderator" {% if role == 'moderator' or not all_lists and not role %}class="active"{% endif %}>{% trans 'Moderator' %}</a></li>
+            <li><a href="?role=member" {% if role == 'member' or not all_lists and not role %}class="active"{% endif %}>{% trans 'Member' %}</a></li>
+            <li><a href="?role=nonmember" {% if role == 'nonmember' %}class="active"{% endif %}>{% trans 'Non-member' %}</a></li>
+            <li><a href="?all-lists" {% if all_lists %}class="active"{% endif %}>{% trans 'All' %}</a></li>
+        </ul>
+        {% endif %}
+        <div class="wg21-toolbar__spacer"></div>
+        {% if user.is_superuser %}
+            {% if domain_count < 1 %}
+                <a class="wg21-btn wg21-btn--gold" href="{% url 'domain_new' %}">{% trans 'Create New Domain' %}</a>
+            {% else %}
+                <a class="wg21-btn wg21-btn--gold" href="{% url 'list_new' %}">{% trans 'Create New List' %}</a>
+            {% endif %}
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if lists|length > 0 %}
+        <section class="wg21-panel wg21-panel--ornate">
+            <table class="wg21-table">
+                <thead>
+                    <tr>
+                        <th>{% trans 'List Name' %}</th>
+                        <th>{% trans 'Description' %}</th>
+                        <th>{% trans 'Last Update' %}</th>
+                        <th>{% trans 'Actions' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for list in lists %}
+                        <tr class="wg21-row-link" data-href="{% url 'list_summary' list_id=list.list_id %}">
+                            <td data-label="{% trans 'List name' %}">
+                                <a href="{% url 'list_summary' list_id=list.list_id %}" class="wg21-table__name">{{ list.display_name }}</a>
+                                {% if check_advertised %}
+                                  {% if user.is_superuser and not list.advertised %}
+                                    ({% trans 'unadvertised' %}*)
+                                  {% endif %}
+                                {% endif %}
+                            </td>
+                            <td class="wg21-table__desc" data-label="{% trans 'Description' %}">{{ list.description|truncatewords:5 }}</td>
+                            <td data-label="{% trans 'Last Update' %}">
+                              {% firstof list.settings.last_post_at list.settings.created_at as last_update %}
+                              {{ last_update|datetime_parse|date:"D M j, g:i a" }}
+                            </td>
+                            <td data-label="{% trans 'Actions' %}" class="wg21-table__actions">
+                                <a href="{% url 'hk_list_overview' mlist_fqdn=list.fqdn_listname %}" class="wg21-btn wg21-btn--primary">{% trans 'View' %}</a>
+                                <a href="{% url 'list_summary' list_id=list.list_id %}" class="wg21-btn wg21-btn--outline">{% trans 'Subscribe' %}</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        {% if not all_lists and not role %}
+            <small class="d-block mt-2">* {% trans 'Only lists that you are owner, moderator or subscriber for are shown here. Click to <a href="?all-lists"> see all lists</a>.' %}</small>
+        {% endif %}
+        {% if user.is_superuser %}
+            <small class="d-block">* {% trans 'Only admins see unadvertised lists in the list index.' %}</small>
+        {% endif %}
+        {% if not user.is_authenticated or "all-lists" in request.GET %}
+            {% paginator lists %}
+        {% endif %}
+    {% else %}
+        <p class="mt-3">{% trans 'There are currently no mailing lists.' %}</p>
+    {% endif %}
+
+{% endblock content %}
+
+{% block additionaljs %}
+{{ block.super }}
+<script>
+    // Make table rows clickable (mirrors the row-click redirect on the
+    // HyperKitty archives index). Clicks on real links/buttons still win.
+    document.querySelectorAll('tr.wg21-row-link[data-href]').forEach(function (row) {
+        row.addEventListener('click', function (event) {
+            if (event.target.closest('a, button')) {
+                return;
+            }
+            window.location = row.dataset.href;
+        });
+    });
+</script>
+{% endblock %}

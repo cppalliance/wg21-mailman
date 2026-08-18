@@ -1,0 +1,16 @@
+{% load i18n %}
+{% comment %} Shared black utility bar. Params: active (one of: lists, wg21, pragma, herald). {% endcomment %}
+<div class="wg21-utilitybar">
+    <div class="wg21-utilitybar__inner">
+        <a href="{% url 'list_index' %}" class="wg21-utilitybar__link wg21-utilitybar__link--active">{% trans 'Mailing List' %}</a>
+        <a href="https://wg21.org/" class="wg21-utilitybar__link">WG21.org</a>
+        {% comment %}
+        Pragma: https://wg21.org/pragma/ — re-enable when product switcher expands
+        <a href="https://wg21.org/pragma/" class="wg21-utilitybar__link">Pragma</a>
+        {% endcomment %}
+        {% comment %}
+        The Herald: URL TBD — re-enable when product switcher expands
+        <a href="#" class="wg21-utilitybar__link">The Herald</a>
+        {% endcomment %}
+    </div>
+</div>

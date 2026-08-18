@@ -1,0 +1,114 @@
+{% load i18n %}
+{% load compress %}
+{% load static %}
+{% load hk_generic %}
+{% export_allowed as export_allowed %}
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="ROBOTS" content="INDEX, FOLLOW" />
+        <title>{% block head_title %}{{ site_name }}{% endblock %}</title>
+        <meta name="author" content="" />
+        <meta name="dc.language" content="en" />
+        <link rel="shortcut icon" href="{% static 'hyperkitty/img/favicon.ico' %}" />
+        <link rel="stylesheet" href="{% static 'hyperkitty/libs/jquery/smoothness/jquery-ui-1.13.1.min.css' %}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{% static 'hyperkitty/libs/fonts/font-awesome/css/font-awesome.min.css' %}" type="text/css" media="all" />
+        {% compress css %}
+        <link rel="stylesheet" href="{% static 'hyperkitty/libs/fonts/icomoon/icomoon.css' %}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{% static 'hyperkitty/libs/fonts/droid/droid.css' %}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{% static 'django-mailman3/css/main.css' %}" />
+        <link rel="stylesheet" type="text/x-scss" media="all" href="{% static 'hyperkitty/sass/hyperkitty.scss' %}" />
+        {% endcompress %}
+        {# --- WG21 shared design system (loaded last to win the cascade) --- #}
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Text:ital@0;1&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'wg21/css/theme.css' %}" />
+        <link rel="stylesheet" href="{% static 'wg21/css/components.css' %}" />
+        {% block additional_stylesheets %} {% endblock %}
+        {% block head_feed %}{% endblock %}
+        {% include 'hyperkitty/headers.html' %}
+    </head>
+
+    <body>
+
+    {% include 'hyperkitty/top.html' %}
+
+    {% include 'wg21/utility_bar.html' with active='lists' %}
+
+    {% trans 'Archives' as breadcrumb_label %}
+    {% include 'wg21/navbar.html' with brand_url='hk_root' breadcrumb_label=breadcrumb_label search_action='hk_search' search_query=query mlist=mlist %}
+
+    {% if messages %}
+    <div class="flashmsgs container-fluid">
+    {% for msg in messages %}
+        <div class="flashmsg-wrapper">
+            <div role="alert" class="alert alert-{{ msg.tags }} {{msg.tags}}
+                {% if msg.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                ">
+                {% else %}
+                alert-dismissible">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                {% endif %}
+                {{ msg }}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+
+     <div class="modal fade" tabindex="-1" role="dialog" id="keyboard-shortcuts">
+       <div class="modal-dialog" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <h4 class="modal-title">{% trans "Keyboard Shortcuts" %}</h4>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+           </div>
+           <div class="modal-body">
+             <h3>{% trans "Thread View" %}</h3>
+             <ul>
+               <li><code>j</code>: {% trans "Next unread message" %}</li>
+               <li><code>k</code>: {% trans "Previous unread message" %}</li>
+               <li><code>j a</code>: {% trans "Jump to all threads" %}</li>
+               <li><code>j l</code>: {% trans "Jump to MailingList overview" %}</li>
+             </ul>
+           </div>
+         </div><!-- /.modal-content -->
+       </div><!-- /.modal-dialog -->
+     </div><!-- /.modal -->
+
+     <div class="container-fluid wg21-content" role="main">
+        {% block content %} {% endblock %}
+    </div> <!-- /container for content -->
+
+    {% include 'wg21/footer.html' %}
+
+    <script src="{% static 'hyperkitty/libs/jquery/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'hyperkitty/libs/jquery/jquery-ui-1.13.1.min.js' %}"></script>
+    {% compress js %}
+    <script type="text/javascript" src="{% static 'hyperkitty/libs/bootstrap/javascripts/bootstrap.bundle.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'hyperkitty/libs/mousetrap/mousetrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'hyperkitty/libs/jquery.expander.js' %}"></script>
+    <script type="text/javascript" src="{% static 'hyperkitty/libs/d3.v2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'hyperkitty/libs/jquery.hotkeys.js' %}"></script>
+    <script type="text/javascript" src="{% static 'django-mailman3/js/main.js' %}"></script>
+    <script type="text/javascript" src="{% static 'hyperkitty/js/hyperkitty-common.js' %}"></script>
+    <script type="text/javascript" src="{% static 'hyperkitty/js/hyperkitty-index.js' %}"></script>
+    <script type="text/javascript" src="{% static 'hyperkitty/js/hyperkitty-overview.js' %}"></script>
+    <script type="text/javascript" src="{% static 'hyperkitty/js/hyperkitty-thread.js' %}"></script>
+    <script type="text/javascript" src="{% static 'hyperkitty/js/hyperkitty-userprofile.js' %}"></script>
+    {% endcompress %}
+    <script>
+      $(document).ready(function(){
+          $("body").addClass("js-enabled");
+          $(".gravatar").addClass("rounded-circle");
+      });
+    </script>
+    {% block additionaljs %} {% endblock %}
+
+    {% include 'hyperkitty/bottom.html' %}
+
+    </body>
+</html>

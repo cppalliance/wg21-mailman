@@ -1,0 +1,14 @@
+{% load i18n %}
+{% comment %}
+    Anonymous Sign In / Sign Up options rendered as dropdown-menu items.
+    Consumed by wg21/navbar.html inside the avatar dropdown when the current
+    user is not authenticated.
+{% endcomment %}
+<a class="dropdown-item" href="{% url LOGIN_URL %}?next={{ next|default:request.path|urlencode }}">
+    <span class="fa fa-sign-in"></span>
+    {% trans 'Sign In' %}
+</a>
+<a class="dropdown-item" href="{% url 'account_signup' %}?next={{ next|default:request.path|urlencode }}">
+    <span class="fa fa-user-plus"></span>
+    {% trans 'Sign Up' %}
+</a>

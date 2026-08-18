@@ -1,0 +1,114 @@
+{% extends "hyperkitty/base.html" %}
+{% load i18n %}
+{% load hk_generic %}
+{% load pagination %}
+{% load static %}
+
+
+{% block head_title %}
+{% trans 'Available lists' %} - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+
+{% comment %}
+The `all-lists`, `list`, `private`, `inactive`, `list-name`, `hide-switches`,
+and (on the <table>) `lists` classes below are retained because
+hyperkitty-index.js keys off them for the activity sparkline, row-click
+redirect, and hide-switch filter. CSS pollution from _hyperkitty-index.scss
+that piggybacks on those hooks is beaten by higher-specificity selectors in
+wg21/css/components.css (see the "HyperKitty listing overrides" block).
+{% endcomment %}
+<div class="all-lists wg21-listing">
+
+    {# --- Hero header (compact strip variant) --- #}
+    <header class="wg21-hero wg21-hero--compact">
+        {% include 'wg21/hero_frame.html' %}
+        {% include 'wg21/hero_emblem.html' with decorative=True %}
+        <div class="wg21-divider" aria-hidden="true"></div>
+        <div class="wg21-hero__content">
+            <h1 class="wg21-hero__title">{% trans 'WG21.org Mailing Lists' %}</h1>
+            <p class="wg21-hero__subtitle">{% trans 'The Official Communications Service for WG21.org' %}</p>
+        </div>
+    </header>
+
+    {# --- Toolbar (variant b: hide switches + find + sort) --- #}
+    <div class="wg21-toolbar filter-lists">
+        {% if all_lists %}
+        <p class="hide-switches m-0">
+            <label class="wg21-check"><input type="checkbox" value="inactive" {% if show_inactive %}checked="checked"{% endif %}/> {% trans "Hide inactive" %}</label>
+            <label class="wg21-check"><input type="checkbox" value="private" /> {% trans "Hide private" %}</label>
+        </p>
+        {% endif %}
+        <form method="get" action="" class="wg21-toolbar__find m-0">
+            <input name="name" type="text" class="wg21-input" id="focusedInput"
+                   placeholder="{% trans 'Find list' %}"
+                   aria-label="Find list"
+                   aria-autocomplete="list" />
+        </form>
+        <div class="wg21-toolbar__spacer"></div>
+        <nav class="wg21-sort-mode" aria-label="mailinglist sort mode">
+            <ul class="wg21-segmented">
+                <li><a href="{% url 'hk_root' %}?{% add_to_query_string "sort" "popular" %}" {% if sort_mode == "popular" %}class="active" aria-current="page"{% endif %}>{% trans 'Most popular' %}</a></li>
+                <li><a href="{% url 'hk_root' %}?{% add_to_query_string "sort" "active" %}" {% if sort_mode == "active" %}class="active" aria-current="page"{% endif %}>{% trans 'Most active' %}</a></li>
+                <li><a href="{% url 'hk_root' %}?{% add_to_query_string "sort" "name" %}" {% if sort_mode == "name" %}class="active" aria-current="page"{% endif %}>{% trans 'By name' %}</a></li>
+                <li><a href="{% url 'hk_root' %}?{% add_to_query_string "sort" "creation" %}" {% if sort_mode == "creation" %}class="active" aria-current="page"{% endif %}>{% trans 'Newest' %}</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    {# --- Framed list panel --- #}
+    <section class="wg21-panel wg21-panel--ornate" aria-label="List of mailinglists">
+        {% if all_lists %}
+        <table class="wg21-table lists">
+            <thead>
+                <tr>
+                    <th>{% trans 'List Name' %}</th>
+                    <th>{% trans 'Description' %}</th>
+                    <th>{% trans 'Last Updated' %}</th>
+                    <th>{% trans 'Actions' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for mlist in all_lists %}
+                <tr class="list{% if mlist.is_private %} private{% elif mlist.recent_threads_count == 0 %} inactive{% endif %}"
+                    data-list-name="{{ mlist.name }}">
+                    <td data-label="{% trans 'List' %}">
+                        {% ifchanged mlist.name|first %}<a name="{{ mlist.name|first }}"></a>{% endifchanged %}
+                        <a href="{% url 'hk_list_overview' mlist_fqdn=mlist.name %}" class="list-name wg21-table__name">
+                            {% if mlist.display_name %}{{ mlist.display_name }}{% else %}{{ mlist.name|until:"@" }}{% endif %}
+                        </a>
+                    </td>
+                    <td class="wg21-table__desc" data-label="{% trans 'Description' %}">
+                        {{ mlist.description|default_if_none:"" }}
+                    </td>
+                    <td data-label="{% trans 'Last Updated' %}">
+                      {{ mlist.recent_threads.0.date_active }}
+                    </td>
+                    <td data-label="{% trans 'Actions' %}" class="wg21-table__actions">
+                        <a href="{% url 'hk_list_overview' mlist_fqdn=mlist.name %}" class="wg21-btn wg21-btn--primary">{% trans 'View' %}</a>
+                        <a href="{% url 'list_summary' list_id=mlist.list_id %}" class="wg21-btn wg21-btn--outline">{% trans 'Subscribe' %}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+          <p class="p-4">{% trans "No archived list yet." %}</p>
+        {% endif %}
+    </section>
+
+    {% paginator all_lists %}
+
+</div> <!-- /all-lists -->
+
+{% endblock %}
+
+{% block additionaljs %}
+{{ block.super }}
+<script>
+    $(function() {
+        setup_index("{% url 'hk_list_recent_activity' 'PLACEHOLDER@PLACEHOLDER' %}");
+    });
+</script>
+{% endblock %}

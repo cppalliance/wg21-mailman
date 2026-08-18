@@ -1,6 +1,6 @@
 ---
 
-# Boost customizations
+# WG21 customizations
 #
 
 - name: Create directory for git repo
@@ -26,6 +26,7 @@
     owner: "{{ __mailman3_web_user_name }}"
     group: "{{ __mailman3_web_group_name }}"
   loop:
+    - { src: '/opt/github/ansible-managed/wg21-mailman/wg21/static/wg21', dest: '{{ mailman3_web_var_dir }}/static_custom/' }
     - { src: '/opt/github/ansible-managed/wg21-mailman/hyperkitty/static/hyperkitty', dest: '{{ mailman3_web_var_dir }}/static_custom/' }
     - { src: '/opt/github/ansible-managed/wg21-mailman/postorius/static/postorius', dest: '{{ mailman3_web_var_dir }}/static_custom/' }
   notify:
@@ -39,6 +40,7 @@
     owner: "{{ __mailman3_web_user_name }}"
     group: "{{ __mailman3_web_group_name }}"
   loop:
+    - { src: '/opt/github/ansible-managed/wg21-mailman/wg21/templates/wg21', dest: '{{ mailman3_web_var_dir }}/templates/' }
     - { src: '/opt/github/ansible-managed/wg21-mailman/hyperkitty/templates/hyperkitty', dest: '{{ mailman3_web_var_dir }}/templates/' }
     - { src: '/opt/github/ansible-managed/wg21-mailman/postorius/templates/postorius', dest: '{{ mailman3_web_var_dir }}/templates/' }
   notify:

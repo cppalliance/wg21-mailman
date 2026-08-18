@@ -1,0 +1,71 @@
+{% load i18n %}
+{% comment %}
+    Shared account dropdown inner content. Caller wraps with its own .dropdown
+    container + toggle button (which holds the avatar/gravatar at the size it
+    needs). Params:
+      logout_next_url - already-rendered URL string for the logout `?next=`.
+      logout_label    - already-translated label for the logout link.
+
+    Usage:
+      {% url 'hk_root' as logout_next_url %}
+      {% trans 'Logout' as logout_label %}
+      <div class="dropdown-menu dropdown-menu-end">
+        {% include 'wg21/account_menu.html' %}
+      </div>
+{% endcomment %}
+<span class="dropdown-item username">{{ user.username|truncatechars:"35" }}</span>
+<div class="dropdown-divider"></div>
+<a class="dropdown-item" href="{% url 'mm_user_profile' %}">
+    <span class="fa fa-user"></span>
+    {% trans 'Account' %}
+</a>
+{% if 'postorius' in INSTALLED_APPS %}
+<a class="dropdown-item" href="{% url 'ps_user_profile' %}">
+    <span class="fa fa-cog"></span>
+    {% trans 'Mailman settings' %}
+</a>
+{% endif %}
+{% if 'hyperkitty' in INSTALLED_APPS %}
+<a class="dropdown-item" href="{% url 'hk_user_profile' %}">
+    <span class="fa fa-comments"></span>
+    {% trans 'Posting activity' %}
+</a>
+{% endif %}
+{% if 'postorius' in INSTALLED_APPS or 'hyperkitty' in INSTALLED_APPS %}
+<div class="dropdown-divider"></div>
+{% if 'postorius' in INSTALLED_APPS %}
+<a class="dropdown-item" href="{% url 'list_index' %}">
+    <span class="fa fa-envelope"></span>
+    {% trans 'Manage lists' %}
+</a>
+{% endif %}
+{% if 'hyperkitty' in INSTALLED_APPS %}
+<a class="dropdown-item" href="{% url 'hk_root' %}">
+    <span class="fa fa-comment"></span>
+    {% trans 'Archives' %}
+</a>
+{% endif %}
+{% if user.is_superuser and 'postorius' in INSTALLED_APPS %}
+<a class="dropdown-item" href="{% url 'domain_index' %}">
+    <span class="fa fa-globe"></span>
+    {% trans 'Domains' %}
+</a>
+<a class="dropdown-item" href="{% url 'global_bans' %}">
+    <span class="fa fa-ban"></span>
+    {% trans 'Bans' %}
+</a>
+<a class="dropdown-item" href="{% url 'system_information' %}">
+    <span class="fa fa-list-alt"></span>
+    {% trans 'System Information' %}
+</a>
+<a class="dropdown-item" href="{% url 'list_users' %}">
+    <span class="fa fa-user"></span>
+    {% trans 'Users' %}
+</a>
+{% endif %}
+{% endif %}
+<div class="dropdown-divider"></div>
+<a class="dropdown-item" href="{% url LOGOUT_URL %}?next={{ logout_next_url }}">
+    <span class="fa fa-sign-out"></span>
+    {{ logout_label }}
+</a>

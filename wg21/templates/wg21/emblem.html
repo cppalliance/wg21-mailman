@@ -1,0 +1,6 @@
+{% load static %}
+{% comment %} Shared WG21 emblem. Params: size (sm|nav|md|lg, default md), alt.
+   Size modifiers are defined in wg21/css/components.css (.wg21-emblem--*). {% endcomment %}
+<img src="{% static 'wg21/img/emblem.png' %}"
+     alt="{{ alt|default:'WG21 Mailing Lists' }}"
+     class="wg21-emblem wg21-emblem--{{ size|default:'md' }}" />
