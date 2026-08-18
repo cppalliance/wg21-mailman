@@ -19,7 +19,7 @@ This repo ships a self-contained local stack (`docker-compose.yml` + `local/`) u
 ```bash
 docker compose up -d
 docker compose logs -f mailman-web   # first run: migrate + collectstatic
-./seed.sh                            # create lists + archive sample messages
+./seed.sh                            # create lists + rich archive sample data
 ```
 
 Then open:
@@ -27,6 +27,7 @@ Then open:
 - Postorius (lists): http://localhost:8300/mailman3/lists/
 - HyperKitty (archives): http://localhost:8300/archives/
 - Django admin: http://localhost:8300/admin/
+- Demo login: `demo` / `demo` (favorites, posted, votes, last-views)
 
 How overrides load locally (mirrors production's `static_custom` + `TEMPLATES DIRS`):
 

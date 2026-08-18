@@ -34,7 +34,8 @@ docker compose exec -T mailman-web sh -c "cd /opt/mailman-web && PYTHONPATH=/opt
   --domain '${DOMAIN}' \
   --lists '${LIST_PARTS}' \
   --threads '${THREADS}' \
-  --replies '${REPLIES}'"
+  --replies '${REPLIES}' \
+  --reset"
 
 echo "==> Syncing list metadata from Mailman"
 docker compose exec -T mailman-web python manage.py mailman_sync
@@ -46,3 +47,4 @@ echo ""
 echo "Ready:"
 echo "  Postorius:  http://localhost:8300/mailman3/lists/"
 echo "  HyperKitty: http://localhost:8300/archives/"
+echo "  Demo login: demo / demo  (Favorites, Posted, votes, last-views)"
