@@ -1,16 +1,23 @@
 {% load i18n %}
-{% comment %} Shared black utility bar. Params: active (one of: lists, wg21, pragma, herald). {% endcomment %}
+{% comment %} Shared black utility bar. Params: active (one of: lists, archives, wg21, pragma, herald). {% endcomment %}
 <div class="wg21-utilitybar">
     <div class="wg21-utilitybar__inner">
-        <a href="{% url 'list_index' %}" class="wg21-utilitybar__link wg21-utilitybar__link--active">{% trans 'Mailing List' %}</a>
-        <a href="https://wg21.org/" class="wg21-utilitybar__link">WG21.org</a>
-        {% comment %}
-        Pragma: https://wg21.org/pragma/ — re-enable when product switcher expands
-        <a href="https://wg21.org/pragma/" class="wg21-utilitybar__link">Pragma</a>
-        {% endcomment %}
-        {% comment %}
-        The Herald: URL TBD — re-enable when product switcher expands
-        <a href="#" class="wg21-utilitybar__link">The Herald</a>
-        {% endcomment %}
+        <nav class="wg21-utilitybar__links" aria-label="{% trans 'Site sections' %}">
+            <ul class="wg21-utilitybar__list">
+                {% trans 'Mailing List' as lists_label %}
+                {% include 'wg21/utility_bar_item.html' with item_key='lists' item_label=lists_label item_url='list_index' %}
+                {% trans 'Archives' as archives_label %}
+                {% include 'wg21/utility_bar_item.html' with item_key='archives' item_label=archives_label item_url='hk_root' %}
+                {% include 'wg21/utility_bar_item.html' with item_key='wg21' item_label='WG21.org' item_url='https://wg21.org/' external='1' %}
+                {% comment %}
+                Pragma: https://wg21.org/pragma/ — re-enable when product switcher expands
+                {% include 'wg21/utility_bar_item.html' with item_key='pragma' item_label='Pragma' item_url='https://wg21.org/pragma/' external='1' %}
+                {% endcomment %}
+                {% comment %}
+                The Herald: URL TBD — re-enable when product switcher expands
+                {% include 'wg21/utility_bar_item.html' with item_key='herald' item_label='The Herald' item_url='#' external='1' %}
+                {% endcomment %}
+            </ul>
+        </nav>
     </div>
 </div>

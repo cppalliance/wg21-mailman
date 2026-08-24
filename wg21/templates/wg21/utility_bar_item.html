@@ -1,0 +1,15 @@
+{% load i18n %}
+{% comment %}
+    One utility-bar item. Params: item_key, item_label, item_url,
+    external (optional, non-empty = raw href not {% url %}).
+    Parent context must provide `active`.
+{% endcomment %}
+<li>
+    {% if active == item_key %}
+        <span class="wg21-utilitybar__link wg21-utilitybar__link--active" aria-current="page">{{ item_label }}</span>
+    {% elif external %}
+        <a href="{{ item_url }}" class="wg21-utilitybar__link">{{ item_label }}</a>
+    {% else %}
+        <a href="{% url item_url %}" class="wg21-utilitybar__link">{{ item_label }}</a>
+    {% endif %}
+</li>

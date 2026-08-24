@@ -18,9 +18,12 @@
                          omitted, the search field (and the collapse toggler)
                          are not rendered.
       search_query     - Optional current search query string.
+      breadcrumb_current - Optional extra crumb after breadcrumb_label
+                           (overview passes the list display name). When
+                           omitted, breadcrumb_label is the current page.
       mlist            - Optional MailingList; when set with search_action,
                          search is scoped to that list and the placeholder /
-                         hidden input reflect it.
+                         hidden input reflect it. Does not affect breadcrumbs.
 {% endcomment %}
 {% url brand_url as logout_next_url %}
 {% trans 'Logout' as logout_label %}
@@ -41,7 +44,16 @@
                 <span class="wg21-navbar__wordmark">{% trans 'Mailing Lists' %}</span>
             </a>
             {% if breadcrumb_label %}
-                <span class="wg21-breadcrumb">{{ breadcrumb_label }}</span>
+                <nav class="wg21-breadcrumb" aria-label="{% trans 'Breadcrumb' %}">
+                    {% if breadcrumb_current %}
+                        <a href="{% url brand_url %}" class="wg21-breadcrumb__item">{{ breadcrumb_label }}</a>
+                        <span class="wg21-breadcrumb__item wg21-breadcrumb__item--current" aria-current="page">
+                            {{ breadcrumb_current }}
+                        </span>
+                    {% else %}
+                        <span class="wg21-breadcrumb__item wg21-breadcrumb__item--current" aria-current="page">{{ breadcrumb_label }}</span>
+                    {% endif %}
+                </nav>
             {% endif %}
         </div>
 

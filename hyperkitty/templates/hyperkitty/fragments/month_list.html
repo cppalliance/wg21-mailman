@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load hk_generic %}
+
+<div class="dropdown dropdown-center wg21-month-select">
+    <button type="button" id="navbarMonthsListDrop"
+            class="wg21-month-select__btn dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false">
+        {% trans "Threads by month" %}
+        <span class="wg21-month-select__chevron" aria-hidden="true"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="navbarMonthsListDrop">
+        {% for year, months in months_list|sort %}
+        <li role="presentation">
+            <span class="dropdown-header">{{ year }}</span>
+        </li>
+        {% for ar_month in months %}
+        <li role="presentation">
+            <a class="dropdown-item" href="{% url 'hk_archives_with_month' year=year mlist_fqdn=mlist.name month=ar_month %}">{{ ar_month|monthtodate:year|date:"F" }}</a>
+        </li>
+        {% endfor %}
+        {% endfor %}
+    </ul>
+</div>
