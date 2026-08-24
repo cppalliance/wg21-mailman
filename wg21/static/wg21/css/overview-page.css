@@ -1,0 +1,512 @@
+/* WG21 HyperKitty list overview (page-owned).
+ * Loaded from overview.html only. Shared chrome stays in components.css.
+ * .wg21-month-select* lives in components.css (global month_list override). */
+
+.wg21-page-overview .wg21-content {
+    padding-block-start: 0;
+    background-color: var(--wg21-surface-white);
+    background-image: var(--wg21-marble);
+    background-size: cover;
+    background-position: center;
+}
+
+.wg21-page-overview .wg21-navbar {
+    border-bottom: none;
+}
+
+.wg21-page-overview footer {
+    margin-top: 0;
+}
+
+/* Tertiary tab bar — light rail + double gold rule (replaces navbar rule on this page) */
+.wg21-tabs {
+    --wg21-tabs-rule: var(--wg21-frame-gap);
+    --wg21-tabs-rule-band: 9px;
+    --wg21-tabs-rule-offset: 15px;
+    --wg21-tabs-rule-thin: 3px;
+    position: relative;
+    background: var(--wg21-surface);
+    border-bottom: var(--wg21-tabs-rule) solid var(--wg21-gold);
+    margin-inline: calc(-1 * var(--wg21-space-6));
+    padding-inline: var(--wg21-space-6);
+    margin-block-end: var(--wg21-space-8);
+}
+.wg21-tabs::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: calc(-1 * var(--wg21-tabs-rule-offset));
+    height: var(--wg21-tabs-rule-band);
+    background-color: var(--wg21-surface);
+    border-block-end: var(--wg21-tabs-rule-thin) solid var(--wg21-gold-border);
+    pointer-events: none;
+}
+.wg21-tabs__list {
+    display: flex;
+    align-items: center;
+    gap: var(--wg21-space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+}
+.wg21-tabs .nav-item { margin: 0; }
+.wg21-tabs .nav-pills .nav-link,
+.wg21-tabs .nav-pills .nav-link:focus {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: var(--wg21-muted);
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-body);
+    font-weight: 400;
+    min-height: var(--wg21-touch);
+    padding: var(--wg21-space-3) var(--wg21-space-2);
+    box-shadow: none;
+}
+.wg21-tabs .nav-pills .nav-link:hover {
+    color: var(--wg21-body);
+    background: transparent;
+}
+.wg21-tabs .nav-pills .nav-link:focus-visible {
+    outline: var(--wg21-frame-gold-width) solid var(--wg21-gold-accent);
+    outline-offset: calc(-1 * var(--wg21-frame-gold-width));
+    border-radius: var(--wg21-radius-sm);
+}
+.wg21-tabs .nav-pills .nav-link.active,
+.wg21-tabs .nav-pills .show > .nav-link {
+    background: transparent;
+    color: var(--wg21-body);
+    font-weight: 700;
+}
+.wg21-tabs .nav-pills li {
+    padding-block: 2px;
+}
+
+@media (max-width: 991.98px) {
+    .wg21-tabs__list {
+        justify-content: center;
+        gap: var(--wg21-space-1);
+    }
+}
+
+/* Two-column body (~70/30) */
+.wg21-overview__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(16rem, 3fr);
+    gap: var(--wg21-space-12);
+    align-items: start;
+    padding-inline: var(--wg21-space-2);
+}
+.wg21-overview__main,
+.wg21-overview__aside {
+    min-inline-size: 0;
+    position: relative;
+}
+
+.wg21-overview__header { margin-block-end: var(--wg21-space-8); }
+.wg21-overview__title {
+    font-family: var(--wg21-font-serif);
+    font-size: 2.5rem !important;
+    font-weight: 400;
+    color: var(--wg21-gold);
+    line-height: var(--wg21-lh-tight);
+    margin: 0 0 var(--wg21-space-2);
+    text-wrap: balance;
+}
+.wg21-overview__subtitle {
+    margin: 0;
+    color: var(--wg21-gold);
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-lead);
+    text-wrap: pretty;
+}
+
+.wg21-section-label,
+.wg21-overview h2.wg21-section-label,
+.wg21-overview h3.wg21-section-label {
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-sm);
+    font-weight: 600;
+    letter-spacing: var(--wg21-tracking-eyebrow);
+    color: var(--wg21-muted);
+    line-height: var(--wg21-lh-base);
+    margin: 0 0 var(--wg21-space-4);
+    text-transform: uppercase;
+}
+
+.wg21-overview .discussions {
+    padding-block: 0;
+}
+
+/* Thread rows (loaded via data-load-from) sit in a white card */
+.wg21-threads.list-group {
+    border: 1px solid var(--wg21-border);
+    border-radius: var(--wg21-radius);
+    background: var(--wg21-surface-white);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.wg21-thread.list-group-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--wg21-space-4);
+    align-items: center;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--wg21-border);
+    border-radius: 0;
+    color: inherit;
+    min-height: var(--wg21-touch);
+    padding: var(--wg21-space-4);
+}
+.wg21-thread.list-group-item:last-child {
+    border-bottom: none;
+}
+.wg21-thread.list-group-item:hover,
+.wg21-thread.list-group-item:focus {
+    background: var(--wg21-surface);
+    color: inherit;
+}
+.wg21-thread.list-group-item:focus-visible {
+    background: var(--wg21-surface);
+    color: inherit;
+    outline: var(--wg21-frame-gold-width) solid var(--wg21-gold-accent);
+    outline-offset: calc(-1 * var(--wg21-frame-gold-width));
+    border-top-left-radius: var(--wg21-radius);
+    border-top-right-radius: var(--wg21-radius);
+}
+.wg21-thread.list-group-item:not(:first-of-type):focus-visible {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.wg21-thread.list-group-item:last-of-type:focus-visible {
+    border-bottom-left-radius: var(--wg21-radius);
+    border-bottom-right-radius: var(--wg21-radius);
+}
+.wg21-thread__icon {
+    color: var(--wg21-gold);
+    font-size: var(--wg21-fs-lead);
+    line-height: 1.4;
+    width: var(--wg21-space-6);
+    text-align: center;
+}
+.overview .wg21-threads .wg21-thread__title .fa-envelope,
+.wg21-thread__icon .fa-envelope,
+.wg21-thread__icon .fa-envelope-o {
+    color: var(--wg21-gold);
+}
+.wg21-thread__title,
+.overview .list-group h3.wg21-thread__title {
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-lead);
+    font-weight: 600;
+    color: var(--wg21-ink);
+    margin: 0;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
+}
+.wg21-thread__time {
+    display: block;
+    color: var(--wg21-gold);
+    margin-top: var(--wg21-space-1);
+}
+.wg21-thread__stats {
+    display: flex;
+    align-items: center;
+    gap: var(--wg21-space-4);
+    margin: 0;
+    color: var(--wg21-muted);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--wg21-fs-sm);
+    white-space: nowrap;
+}
+.wg21-thread__stats li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    font-size: var(--wg21-fs-body);
+}
+.wg21-thread__stats .fa { color: var(--wg21-muted); font-weight: 400; }
+.wg21-thread__stats .wg21-overview__icon {
+    background-color: var(--wg21-muted);
+}
+.wg21-thread__all {
+    display: block;
+    text-align: center;
+    background: transparent;
+    border: none;
+    color: var(--wg21-gold);
+    padding: var(--wg21-space-6) 0;
+}
+.wg21-thread__all:hover,
+.wg21-thread__all:focus {
+    background: transparent;
+    color: var(--wg21-gold-dark);
+}
+
+.wg21-empty {
+    color: var(--wg21-muted);
+    margin: var(--wg21-space-4) 0;
+}
+
+/* Sidebar */
+.wg21-overview__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-4);
+}
+.wg21-overview .wg21-month-select,
+.wg21-overview .wg21-month-select__btn {
+    display: inline-flex;
+    width: 100%;
+}
+.wg21-overview .wg21-month-select .dropdown-menu {
+    width: 100%;
+}
+.wg21-overview__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wg21-space-3);
+}
+.wg21-overview__actions .wg21-btn {
+    flex: 1 1 min-content;
+    min-height: var(--wg21-touch);
+    min-width: 12.5rem;
+}
+.wg21-overview__actions .wg21-btn--primary {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.wg21-card {
+    border: 1px solid var(--wg21-border);
+    border-radius: var(--wg21-radius);
+    background: var(--wg21-surface-white);
+    padding: var(--wg21-space-4) var(--wg21-space-6);
+}
+
+.wg21-overview .stats {
+    padding: var(--wg21-space-4) var(--wg21-space-6);
+}
+
+.wg21-overview .stats .caption,
+.wg21-overview .stats .duration-text {
+    color: var(--wg21-ink);
+    font-size: var(--wg21-fs-sm);
+    margin-block-end: var(--wg21-space-1);
+    margin-block-start: unset;
+}
+.wg21-overview .stats .chart {
+    --wg21-chart-min-height: 50px;
+    --wg21-chart-bar-max: 11px;
+    --wg21-chart-bar-radius: 6px;
+    --wg21-chart-zero: 12px;
+    width: 100%;
+    min-height: var(--wg21-chart-min-height);
+    margin-block-end: var(--wg21-space-3);
+    padding: var(--wg21-space-2);
+    overflow: hidden;
+    background: color-mix(in oklab, var(--wg21-gold) 8%, var(--wg21-surface-white));
+    border-radius: var(--wg21-radius);
+}
+.wg21-overview .stats .chart-data {
+    display: block;
+    width: 100%;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+.wg21-overview .chart-data .grid,
+.wg21-overview .chart-data .axis {
+    display: none;
+}
+.wg21-overview .chart-data .bars rect {
+    fill: var(--wg21-navy);
+    width: min(var(--wg21-chart-bar-max), 2.4%);
+    rx: var(--wg21-chart-bar-radius);
+}
+.wg21-overview .chart-data .bars rect[height="0"] {
+    height: var(--wg21-chart-zero);
+    transform: translateY(calc(-1 * var(--wg21-chart-zero)));
+}
+.wg21-overview .chart-data .bars rect.is-tall {
+    fill: var(--wg21-gold);
+}
+.wg21-overview .stats ul.list-stats.wg21-overview__metrics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-1) var(--wg21-space-4);
+    color: var(--wg21-ink);
+    font-size: var(--wg21-fs-sm);
+    padding-bottom: 0;
+}
+.wg21-overview .stats ul.list-stats.wg21-overview__metrics li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wg21-space-1);
+    padding-inline: unset;
+    margin-inline-end: unset;
+}
+.wg21-overview__icon {
+    display: inline-block;
+    width: 1.25em;
+    height: 1.25em;
+    flex-shrink: 0;
+    background-color: var(--wg21-gold);
+    -webkit-mask: center / contain no-repeat;
+            mask: center / contain no-repeat;
+    vertical-align: middle;
+}
+.wg21-overview__icon--users {
+    -webkit-mask-image: url("../img/user_group.svg");
+            mask-image: url("../img/user_group.svg");
+}
+.wg21-overview__icon--comments {
+    -webkit-mask-image: url("../img/comment.svg");
+            mask-image: url("../img/comment.svg");
+}
+.wg21-overview__icon--user {
+    -webkit-mask-image: url("../img/user_alt.svg");
+            mask-image: url("../img/user_alt.svg");
+}
+.wg21-overview__icon--chat {
+    -webkit-mask-image: url("../img/chat_alt_3.svg");
+            mask-image: url("../img/chat_alt_3.svg");
+}
+.wg21-overview__icon--likes {
+    -webkit-mask-image: url("../img/thumb_up.svg");
+            mask-image: url("../img/thumb_up.svg");
+}
+
+.wg21-poster {
+    display: flex;
+    align-items: center;
+    gap: var(--wg21-space-3);
+    padding-block: var(--wg21-space-2);
+}
+.wg21-poster__avatar,
+.wg21-overview .gravatar.wg21-poster__avatar {
+    width: var(--wg21-space-12);
+    height: var(--wg21-space-12);
+    flex-shrink: 0;
+    border-radius: var(--wg21-radius-pill);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--wg21-navy);
+    color: var(--wg21-white);
+}
+.wg21-poster:nth-child(5n+2) .wg21-poster__avatar { background: var(--wg21-ink); }
+.wg21-poster:nth-child(5n+3) .wg21-poster__avatar { background: var(--wg21-gold); }
+.wg21-poster:nth-child(5n+4) .wg21-poster__avatar { background: var(--wg21-success); }
+.wg21-poster__initials {
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-sm);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--wg21-white);
+}
+.wg21-poster__meta {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    gap: 0.15em;
+}
+.wg21-poster__meta .maker-name,
+.wg21-poster__meta .maker-name a {
+    color: var(--wg21-ink);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+.wg21-poster__meta .score {
+    color: var(--wg21-muted);
+    font-size: var(--wg21-fs-sm);
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+}
+.wg21-poster__rank {
+    color: var(--wg21-gold-dark);
+    font-family: var(--wg21-font-serif);
+}
+
+.wg21-overview__extras {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--wg21-space-4);
+    margin-block-start: var(--wg21-space-2);
+}
+.wg21-overview__quiet {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--wg21-muted);
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-sm);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    cursor: pointer;
+    min-height: var(--wg21-space-6);
+}
+.wg21-overview__quiet:hover,
+.wg21-overview__quiet:focus-visible {
+    color: var(--wg21-gold-dark);
+}
+.wg21-overview__quiet.dropdown-toggle::after {
+    margin-inline-start: 0.35em;
+}
+
+.wg21-overview .back-to-top {
+    display: inline-block;
+    margin-block-start: var(--wg21-space-8);
+    color: var(--wg21-gold);
+}
+
+@media (max-width: 991.98px) {
+    .wg21-overview__layout {
+        grid-template-columns: 1fr;
+        gap: var(--wg21-space-8);
+        padding-inline: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .wg21-tabs {
+        margin-inline: calc(-1 * var(--wg21-space-6));
+        padding-inline: var(--wg21-space-4);
+    }
+    .wg21-thread.list-group-item {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+    .wg21-thread__stats {
+        grid-column: 2;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wg21-tabs .nav-link,
+    .wg21-thread {
+        transition: none;
+    }
+}
+
+@media (forced-colors: active) {
+    .wg21-tabs { border-bottom: var(--wg21-frame-gold-width) solid CanvasText; }
+    .wg21-tabs .nav-pills .nav-link.active { outline: var(--wg21-frame-gold-width) solid CanvasText; }
+    .wg21-card,
+    .wg21-threads.list-group { border: 1px solid CanvasText; }
+    .wg21-poster__avatar { border: 1px solid CanvasText; }
+    .wg21-overview .chart-data .bars rect {
+        fill: CanvasText;
+        stroke: CanvasText;
+    }
+    .wg21-overview__icon {
+        background-color: CanvasText;
+    }
+}

@@ -1,0 +1,55 @@
+{% load i18n %}
+{% load static %}
+{% load hk_generic %}
+
+{% if threads %}
+
+<div class="list-group wg21-threads">
+    {% for thread in threads %}
+        <a class="list-group-item list-group-item-action wg21-thread" href="{% url 'hk_thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}">
+            <span class="wg21-thread__icon" aria-hidden="true">
+                <i class="fa fa-envelope-o"></i>
+            </span>
+            <span class="wg21-thread__body">
+                <h3 class="list-group-item-heading wg21-thread__title mb-1">
+                    {% if thread|is_unread_by:request.user %}
+                        <span class="sr-only">{% trans 'New messages in this thread' %}. </span>
+                    {% endif %}
+                    {{ thread.subject|strip_subject:mlist }}
+                </h3>
+                <time class="wg21-thread__time list-group-item-text" datetime="{{ thread.date_active|date:'c' }}">
+                    {{ thread.date_active|date:"D M j, g:i a" }}
+                </time>
+            </span>
+            <ul class="list-unstyled list-stats wg21-thread__stats">
+                <li>
+                    <span class="wg21-overview__icon wg21-overview__icon--user" aria-hidden="true"></span>
+                    <span class="sr-only">{% trans "participants" %}</span>
+                    {{ thread.participants_count }}
+                </li>
+                <li>
+                    <span class="wg21-overview__icon wg21-overview__icon--chat" aria-hidden="true"></span>
+                    <span class="sr-only">{% trans "replies" %}</span>
+                    {{ thread|num_comments }}
+                </li>
+                <li>
+                    {% with votes=thread.get_votes %}
+                    <span class="likestatus">
+                        <span class="wg21-overview__icon wg21-overview__icon--likes" aria-hidden="true"></span>
+                        <span class="sr-only">{% trans "likes" %}</span>
+                        {% widthratio votes.dislikes 1 -1 as dislikes %}
+                        {{ votes.likes|add:dislikes }}
+                    </span>
+                    {% endwith %}
+                </li>
+            </ul>
+        </a>
+    {% endfor %}
+</div>
+<a class="wg21-thread__all" href="{% url 'hk_archives_latest' mlist_fqdn=mlist.name %}">{% trans "All Threads" %}</a>
+
+{% elif empty %}
+
+<p class="wg21-empty">{{ empty }}</p>
+
+{% endif %}
