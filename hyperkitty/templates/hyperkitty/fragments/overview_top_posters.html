@@ -1,0 +1,14 @@
+{% load i18n %}
+{% load hk_generic %}
+
+{% trans "posts" as posts_label %}
+{% for poster in mlist.top_posters %}
+    {% if poster.mailman_id %}
+        {% url 'hk_public_user_profile' user_id=poster.mailman_id as poster_profile %}
+        {% include 'hyperkitty/fragments/overview_poster.html' with name=poster.name|escapeemail score=poster.count score_label=posts_label profile_url=poster_profile only %}
+    {% else %}
+        {% include 'hyperkitty/fragments/overview_poster.html' with name=poster.name|escapeemail score=poster.count score_label=posts_label only %}
+    {% endif %}
+{% empty %}
+<p class="wg21-empty">{% trans "No posters this month (yet)." %}</p>
+{% endfor %}

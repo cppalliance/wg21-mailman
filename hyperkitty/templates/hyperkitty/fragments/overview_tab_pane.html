@@ -1,0 +1,9 @@
+{% load i18n static %}
+<div id="{{ pane_id }}" role="tabpanel" class="tab-pane{% if pane_active %} active{% endif %}" aria-labelledby="{{ tab_id }}">
+    <h2 class="wg21-section-label">
+        {{ heading }}{% if count != '' %} ({{ count }}){% endif %}
+    </h2>
+    <div data-load-from="{{ load_url }}">
+        <img alt="{% trans 'Loading…' %}" class="ajaxloader" src="{% static 'hyperkitty/img/ajax-loader.gif' %}" width="32" height="32" />
+    </div>
+</div>

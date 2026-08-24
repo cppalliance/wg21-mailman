@@ -1,0 +1,19 @@
+{% load i18n %}
+<div class="maker wg21-poster">
+    {% if rank %}
+        <div class="wg21-poster__rank" aria-hidden="true">#{{ rank }}</div>
+    {% endif %}
+    <div class="gravatar wg21-poster__avatar" data-name="{{ name }}">
+        <span class="wg21-poster__initials" aria-hidden="true"></span>
+    </div>
+    <div class="gravatar-details wg21-poster__meta">
+        <span class="maker-name">
+            {% if profile_url %}
+            <a href="{{ profile_url }}" title="{% trans 'See the profile' %}">{{ name }}</a>
+            {% else %}
+                {{ name }}
+            {% endif %}
+        </span>
+        <span class="score">{{ score_prefix }}{{ score }} {{ score_label }}</span>
+    </div>
+</div>
