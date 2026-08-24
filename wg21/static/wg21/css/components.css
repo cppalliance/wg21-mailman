@@ -4,45 +4,103 @@
 
 /* ============================================================
    Utility bar (black top strip)
+   Matches https://wg21.org/static/css/topbar.css (.topbar / .topbar-tab)
    ============================================================ */
 .wg21-utilitybar {
-    background: var(--wg21-black-bar);
+    --wg21-utilitybar-tab-pad: var(--wg21-space-4);
+    --wg21-utilitybar-tab-size: var(--wg21-fs-sm);
+    --wg21-utilitybar-height: 2.375rem;
+    background: var(--wg21-utilitybar-bg);
     color: var(--wg21-on-black-bar);
     font-family: var(--wg21-font-mono);
-    font-size: var(--wg21-fs-lead);
-    box-shadow: 0 3.02px 48.32px 0 rgb(from var(--wg21-black-bar) r g b / 0.55%);
-    overflow-block: auto;
-  }
-  .wg21-utilitybar__inner {
+    font-size: var(--wg21-utilitybar-tab-size);
+    border-bottom: var(--wg21-frame-gold-width) solid var(--wg21-gold-dark);
+}
+.wg21-utilitybar__inner {
     max-width: var(--wg21-container-max);
     margin: 0 auto;
-    padding: 0 var(--wg21-space-8);
+    padding: 0 max(var(--wg21-space-6), var(--wg21-space-4));
     display: flex;
-    align-items: center;
+    align-items: stretch;
+    height: var(--wg21-utilitybar-height);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+}
+.wg21-utilitybar__inner::-webkit-scrollbar {
+    display: none;
+}
+.wg21-utilitybar__links {
+    min-inline-size: 0;
+    padding-block: unset;
+}
+.wg21-utilitybar__list {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.wg21-utilitybar__list > li {
+    display: flex;
+}
+.wg21-utilitybar__list > li:last-child .wg21-utilitybar__link {
+    border-right: none;
 }
 .wg21-utilitybar__link {
-    color: rgb(from var(--wg21-on-navy) r g b / 50%);
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    text-align: center;
+    color: rgb(from var(--wg21-white) r g b / 50%);
     text-decoration: none;
-    letter-spacing: 0.69px;
     font-weight: 400;
-    padding: var(--wg21-space-4) var(--wg21-space-8);
-    border-right: 1.25px solid rgb(from var(--wg21-on-navy) r g b / 6%);
+    font-size: var(--wg21-utilitybar-tab-size);
+    line-height: 1.9;
+    letter-spacing: 0.05em;
+    padding: 0 var(--wg21-utilitybar-tab-pad);
+    border-right: 1px solid rgb(from var(--wg21-white) r g b / 6%);
+    transition: color 0.15s ease;
 }
-.wg21-utilitybar__link:hover {
-    color: var(--wg21-white);
+a.wg21-utilitybar__link:hover {
+    color: rgb(from var(--wg21-white) r g b / 80%);
+    background: rgb(from var(--wg21-gold-accent) r g b / 8%);
 }
-.wg21-utilitybar__link--active {
-  background-color: rgb(from var(--wg21-gold-accent) r g b / 8%);
+a.wg21-utilitybar__link:focus-visible {
+    outline: var(--wg21-frame-gold-width) solid var(--wg21-gold-accent);
+    outline-offset: calc(-1 * var(--wg21-frame-gold-width));
+    border-radius: var(--wg21-radius-sm);
+}
+.wg21-utilitybar__link--active,
+.wg21-utilitybar__link--active:hover {
     color: var(--wg21-gold-accent);
     font-weight: 700;
+    background: rgb(from var(--wg21-gold-accent) r g b / 8%);
+    cursor: default;
+}
+@media (max-width: 720px) {
+    .wg21-utilitybar { --wg21-utilitybar-height: 2.125rem; }
+    .wg21-utilitybar__inner { padding: 0; }
+}
+@media (max-width: 480px) {
+    .wg21-utilitybar {
+        --wg21-utilitybar-tab-pad: var(--wg21-space-2);
+        --wg21-utilitybar-tab-size: var(--wg21-fs-eyebrow);
+        --wg21-utilitybar-height: 2rem;
+    }
+    .wg21-utilitybar__link { letter-spacing: 0.02em; }
 }
 
 /* ============================================================
    Primary navbar (navy gradient)
    ============================================================ */
 .wg21-navbar {
+    position: relative;
+    z-index: var(--wg21-z-navbar);
     background: linear-gradient(180deg, var(--wg21-navy-grad-top), var(--wg21-navy-grad-bottom));
-    border-bottom: 2px solid var(--wg21-gold);
+    border-bottom: 6px solid var(--wg21-gold);
     padding: 0;
 }
 .wg21-navbar .wg21-navbar__inner {
@@ -88,15 +146,35 @@
 .wg21-breadcrumb {
     display: inline-flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: var(--wg21-space-3);
-    color: var(--wg21-on-navy);
-    font-family: var(--wg21-font-mono);
+    color: var(--wg21-on-navy-muted);
+    font-family: var(--wg21-font-body);
     font-size: var(--wg21-navbar-fs-breadcrumb);
 }
-.wg21-breadcrumb::before {
+.wg21-breadcrumb::before,
+.wg21-breadcrumb__item + .wg21-breadcrumb__item::before {
     content: "\203A"; /* › */
     color: var(--wg21-gold);
     font-size: var(--wg21-navbar-fs-chevron);
+    font-weight: 400;
+}
+.wg21-breadcrumb__item + .wg21-breadcrumb__item::before {
+    margin-inline-end: var(--wg21-space-3);
+}
+.wg21-breadcrumb__item {
+    display: inline-flex;
+    align-items: center;
+}
+.wg21-breadcrumb a.wg21-breadcrumb__item {
+    color: var(--wg21-on-navy-muted);
+}
+.wg21-breadcrumb a.wg21-breadcrumb__item:hover {
+    color: var(--wg21-gold-bright);
+}
+.wg21-breadcrumb__item--current {
+    color: var(--wg21-white);
+    font-weight: 700;
 }
 .wg21-navbar__spacer { flex: 1 1 auto; }
 
@@ -743,6 +821,7 @@ table.lists.wg21-table tbody tr.list:hover a:not(.wg21-btn) {
 /* ============================================================
    Footer (marble strip)
    ============================================================ */
+
 .wg21-footer {
     background-image: var(--wg21-marble);
     background-size: cover;
@@ -874,4 +953,81 @@ html { font-size: 16px; }                       /* undo _hyperkitty-base.scss */
     }
     .wg21-table__actions { justify-content: flex-start; }
     .wg21-hero__grid { flex-direction: column; text-align: center; }
+}
+
+
+/* ============================================================
+   Month select (HyperKitty month_list.html override — global chrome)
+   Compact by default (thread-list header). Overview stretches it.
+   ============================================================ */
+.wg21-month-select {
+    position: relative;
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    vertical-align: middle;
+}
+.wg21-month-select__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--wg21-space-3);
+    width: auto;
+    min-width: 12rem;
+    min-height: var(--wg21-touch);
+    padding: var(--wg21-space-2) var(--wg21-space-4);
+    background: var(--wg21-surface-white);
+    color: var(--wg21-ink);
+    border: var(--wg21-frame-gold-width) solid var(--wg21-gold);
+    border-radius: var(--wg21-radius);
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-body);
+    cursor: pointer;
+}
+.wg21-month-select__btn.dropdown-toggle::after {
+    display: none;
+}
+.wg21-month-select__chevron {
+    width: 0.45em;
+    height: 0.45em;
+    border-inline-end: var(--wg21-frame-gold-width) solid var(--wg21-gold);
+    border-block-end: var(--wg21-frame-gold-width) solid var(--wg21-gold);
+    transform: rotate(45deg) translate(-1px, -2px);
+    flex-shrink: 0;
+}
+.wg21-month-select__btn:hover {
+    background: var(--wg21-surface);
+    color: var(--wg21-ink);
+}
+.wg21-month-select .dropdown-menu {
+    display: none;
+    position: absolute;
+    inset-inline-start: 0;
+    min-width: 100%;
+    width: max-content;
+    z-index: var(--wg21-z-dropdown);
+}
+.wg21-month-select .dropdown-menu.show {
+    display: block;
+}
+.thread-list-header .wg21-month-select {
+    flex: 0 0 auto;
+    margin-inline: var(--wg21-space-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wg21-utilitybar__link,
+    .wg21-btn,
+    .wg21-month-select__btn {
+        transition: none;
+    }
+}
+
+@media (forced-colors: active) {
+    .wg21-navbar { border-bottom: 2px solid CanvasText; }
+    .wg21-month-select__btn { border: 1px solid CanvasText; }
+    .wg21-utilitybar__link--active {
+        outline: 2px solid CanvasText;
+        outline-offset: -2px;
+    }
 }

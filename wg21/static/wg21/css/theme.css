@@ -14,6 +14,7 @@
     --wg21-gold-dark: oklch(54.61% 0.09 79.81);     /* #8c6a2c */
     --wg21-gold-pale: oklch(82.36% 0.0653 86.27 / 0.549); /* #D8C3958C */
     --wg21-black-bar: oklch(14.48% 0 none);         /* #0A0A0A */
+    --wg21-utilitybar-bg: oklch(16.8% 0 none);      /* #0E0E0E — wg21.org topbar */
     --wg21-white: oklch(100% 0 none);               /* #FFFFFF */
 
     /* Surfaces */
@@ -72,6 +73,7 @@
     --wg21-space-6: 1.5rem;
     --wg21-space-8: 2rem;
     --wg21-space-12: 3rem;
+    --wg21-touch: 44px;
     --wg21-container-max: 1920px;
 
     /* Borders, frame & radius */
