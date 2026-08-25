@@ -1,0 +1,134 @@
+{% extends "hyperkitty/base.html" %}
+{% load i18n %}
+{% load hk_generic %}
+{% load pagination %}
+{% load cache %}
+{% load static %}
+
+{% comment %}
+    Overrides HyperKitty 1.3.12 hyperkitty/thread_list.html.
+    Serves `hk_archives_latest` (All Threads) plus the month and day archive
+    views -- all three come from the same `mlist.archives` view, so the section
+    label is driven by `list_title` ("" on /latest, "F Y" on a month).
+
+    Deliberate divergences from upstream (see docs/redesign-components.md):
+      - Overview-style header + two-column layout with a reduced sidebar
+        (actions, month select, counts). No activity chart or top posters:
+        those need extra AJAX and this view does not provide their data.
+      - Rows come from fragments/wg21_thread_row_large.html instead of
+        threads/summary_thread_large.html, so search results keep upstream rows.
+      - Dropped the `#thread-list` / `.thread` hooks: no JS uses them here and
+        _hyperkitty-threadslist.scss styles them against the WG21 theme.
+      - No additionaljs. Upstream initialised jquery.expander (the excerpt is
+        CSS-clamped now) and bound a `select#months-list` handler for a <select>
+        that the 1.3.12 month_list fragment no longer renders.
+      - Cache-fragment keys are suffixed _wg21_v2 so the 24h diskcache does not
+        serve pre-redesign markup.
+{% endcomment %}
+
+{% block head_title %}
+{% trans 'All Threads' as all_threads_label %}
+{{ list_title|default:all_threads_label }} - {{ mlist.display_name|default:mlist.name }} - {{ block.super }}
+{% endblock %}
+
+{% block head_feed %}
+<link rel="alternate" type="application/rss+xml" title="{{ mlist.display_name }}" href="{% url 'hk_list_feed' mlist_fqdn=mlist.name %}"/>
+{% endblock %}
+
+{% block additional_stylesheets %}
+    <link rel="stylesheet" href="{% static 'wg21/css/threads.css' %}" />
+    <link rel="stylesheet" href="{% static 'wg21/css/thread-list-page.css' %}" />
+{% endblock %}
+
+{% block body_class %}wg21-page-thread-list{% endblock %}
+
+{% block wg21_navbar %}
+    {% trans 'Archives' as breadcrumb_label %}
+    {% trans 'All Threads' as all_threads_label %}
+    {% url 'hk_list_overview' mlist_fqdn=mlist.name as list_overview_url %}
+    {% firstof mlist.display_name mlist.name|until:"@" as list_crumb %}
+    {% include 'wg21/navbar.html' with brand_url='hk_root' breadcrumb_label=breadcrumb_label breadcrumb_parent=list_crumb breadcrumb_parent_url=list_overview_url breadcrumb_current=list_title|default:all_threads_label search_action='hk_search' search_query=query mlist=mlist %}
+{% endblock %}
+
+{% block content %}
+
+{% trans 'All Threads' as all_threads_label %}
+<div class="wg21-thread-list" id="thread-list">
+
+    <div class="wg21-thread-list__rule" aria-hidden="true"></div>
+
+    <header class="wg21-thread-list__header">
+        <p class="wg21-section-label">{{ list_title|default:all_threads_label }}</p>
+        <h1 class="wg21-thread-list__title">
+            <a href="{% url 'hk_list_overview' mlist_fqdn=mlist.name %}">
+                {% if mlist.display_name %}
+                    {{ mlist.display_name }}
+                {% else %}
+                    {{ mlist.name|until:"@" }}
+                {% endif %}
+            </a>
+        </h1>
+        <p class="wg21-thread-list__subtitle">
+            <span class="wg21-thread-list__address">{{ mlist.name }}</span>
+            {% if mlist.description %}
+                <span aria-hidden="true"> &middot; </span>
+                <span>{{ mlist.description }}</span>
+            {% endif %}
+        </p>
+    </header>
+
+    <div class="wg21-thread-list__layout">
+        <div class="wg21-thread-list__main">
+            {% if threads %}
+            <div class="wg21-thread-stack">
+                {% for thread in threads %}
+                    {% include 'hyperkitty/fragments/wg21_thread_row_large.html' %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="wg21-empty">{% trans "Sorry no email threads could be found" %} {{ no_results_text }}.</p>
+            {% endif %}
+
+            {# Cache the pagination template rendering for the mailing list for 24hrs. #}
+            {% cache 86400 threads_paginator_wg21_v2 threads LANGUAGE_CODE %}
+                {% paginator threads bydate=True %}
+            {% endcache %}
+        </div>
+
+        <aside class="wg21-thread-list__aside" aria-label="{% trans 'List actions and archives' %}">
+            <div class="wg21-thread-list__actions">
+                <a href="{% url 'hk_message_new' mlist_fqdn=mlist.name %}" class="wg21-btn wg21-btn--gold">
+                    <span aria-hidden="true">+</span>
+                    {% trans "New thread" %}
+                </a>
+                {% if export and export_allowed %}
+                <a href="{{ export.url }}" title="{{ export.title }}" class="wg21-btn wg21-btn--outline">
+                    {{ export.message }}
+                </a>
+                {% endif %}
+            </div>
+
+            {% cache 86400 month_list_select_wg21_v2 LANGUAGE_CODE months_list mlist.name %}
+                {% include 'hyperkitty/fragments/month_list.html' %}
+            {% endcache %}
+
+            <div class="wg21-card">
+                <ul class="list-stats list-unstyled wg21-icon-metrics">
+                    {% if participants_count %}
+                    <li>
+                        <span class="wg21-icon wg21-icon--users" aria-hidden="true"></span>
+                        <span>{{ participants_count }} {% trans "participants" %}</span>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <span class="wg21-icon wg21-icon--comments" aria-hidden="true"></span>
+                        <span>{{ threads.paginator.count }} {% trans "discussions" %}</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+</div>
+
+{% endblock %}

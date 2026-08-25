@@ -14,6 +14,7 @@
 {% endblock %}
 
 {% block additional_stylesheets %}
+    <link rel="stylesheet" href="{% static 'wg21/css/threads.css' %}" />
     <link rel="stylesheet" href="{% static 'wg21/css/overview-page.css' %}" />
 {% endblock %}
 
@@ -139,13 +140,13 @@ Retained HyperKitty hooks (do not rename):
                 <p class="duration-text">
                     {% trans "Activity in the past <strong>30</strong> days:" %}
                 </p>
-                <ul class="list-stats list-unstyled wg21-overview__metrics">
+                <ul class="list-stats list-unstyled wg21-icon-metrics">
                     <li>
-                        <span class="wg21-overview__icon wg21-overview__icon--users" aria-hidden="true"></span>
+                        <span class="wg21-icon wg21-icon--users" aria-hidden="true"></span>
                         <span>{{ mlist.recent_participants_count }} {% trans "participants" %}</span>
                     </li>
                     <li>
-                        <span class="wg21-overview__icon wg21-overview__icon--comments" aria-hidden="true"></span>
+                        <span class="wg21-icon wg21-icon--comments" aria-hidden="true"></span>
                         <span>{{ mlist.recent_threads_count }} {% trans "discussions" %}</span>
                     </li>
                 </ul>

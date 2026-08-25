@@ -819,6 +819,27 @@ table.lists.wg21-table tbody tr.list:hover a:not(.wg21-btn) {
 .wg21-panel--ornate::after { right: 4px; }
 
 /* ============================================================
+   Card surface + section label
+   Shared primitives (list overview sidebar, All Threads sidebar).
+   ============================================================ */
+.wg21-card {
+    border: 1px solid var(--wg21-border);
+    border-radius: var(--wg21-radius);
+    background: var(--wg21-surface-white);
+    padding: var(--wg21-space-4) var(--wg21-space-6);
+}
+.wg21-section-label {
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-sm);
+    font-weight: 600;
+    letter-spacing: var(--wg21-tracking-eyebrow);
+    color: var(--wg21-muted);
+    line-height: var(--wg21-lh-base);
+    margin: 0 0 var(--wg21-space-4);
+    text-transform: uppercase;
+}
+
+/* ============================================================
    Footer (marble strip)
    ============================================================ */
 
@@ -1009,10 +1030,6 @@ html { font-size: 16px; }                       /* undo _hyperkitty-base.scss */
 }
 .wg21-month-select .dropdown-menu.show {
     display: block;
-}
-.thread-list-header .wg21-month-select {
-    flex: 0 0 auto;
-    margin-inline: var(--wg21-space-2);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,0 +1,89 @@
+{% load i18n %}
+{% load hk_generic %}
+{% comment %}
+    WG21 thread card for the All Threads page (thread_list.html).
+    Styled by wg21/css/threads.css (.wg21-thread-card).
+
+    Layout mirrors the thread-detail message card: gold-bordered shell, warm
+    header band, white body, stats footer. Cards stack with 1rem gap via
+    .wg21-thread-stack on the parent.
+
+    Context: thread, mlist.
+{% endcomment %}
+{% with starting_email=thread.starting_email %}
+{% with sender=starting_email.sender_name|default:starting_email.sender.address %}
+<article id="{{ thread.thread_id }}"
+         class="wg21-thread-card{% if thread.is_unread %} wg21-thread-card--unread{% endif %}{% if thread.favorite %} wg21-thread-card--favorite{% endif %}">
+
+    <header class="wg21-thread-card__header">
+        <div class="wg21-thread-card__identity">
+            <span class="wg21-thread-card__avatar-wrap">
+                {% if starting_email.sender.address %}
+                    {% gravatar starting_email.sender.address 80 '' 'gravatar wg21-thread-card__avatar' %}
+                {% endif %}
+                <span class="wg21-thread-card__avatar wg21-thread-card__avatar--initials"
+                      aria-hidden="true">{{ sender|slice:":1"|upper }}</span>
+            </span>
+
+            <div class="wg21-thread-card__meta">
+                <span class="wg21-thread-card__sender">{{ sender|escapeemail }}</span>
+                <time class="wg21-thread-card__time"
+                      datetime="{{ thread.date_active|date:'c' }}"
+                      title="{{ thread.date_active|date:'l, j F Y H:i:s' }}">
+                    {{ thread.date_active|date:"j M Y" }} · {{ thread.date_active|date:"g:i a" }}
+                </time>
+            </div>
+        </div>
+
+        <span class="wg21-thread-card__badge">{% trans "Original" %}</span>
+    </header>
+
+    <div class="wg21-thread-card__body">
+        <h3 class="wg21-thread-card__title">
+            <a class="wg21-thread-card__link"
+               href="{% url 'hk_thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}">
+                {% if thread.favorite %}
+                    <i class="fa fa-star wg21-thread-card__star" aria-hidden="true"></i>
+                    <span class="sr-only">{% trans "Favorite" %}. </span>
+                {% endif %}
+                {% if thread|is_unread_by:request.user %}
+                    <span class="sr-only">{% trans "New messages in this thread" %}. </span>
+                {% endif %}
+                {{ starting_email.subject|strip_subject:mlist }}
+            </a>
+        </h3>
+
+        {% if starting_email.content %}
+        <p class="wg21-thread-card__excerpt">
+            {{ starting_email.content|urlizetrunc:76|escapeemaillinks }}
+        </p>
+        {% endif %}
+    </div>
+
+    <footer class="wg21-thread-card__footer">
+        <ul class="list-unstyled list-stats wg21-thread-card__stats">
+            <li>
+                <span class="wg21-icon wg21-icon--user" aria-hidden="true"></span>
+                <span class="sr-only">{% trans "participants" %}</span>
+                {{ thread.participants_count }}
+            </li>
+            <li>
+                <span class="wg21-icon wg21-icon--chat" aria-hidden="true"></span>
+                <span class="sr-only">{% trans "replies" %}</span>
+                {{ thread|num_comments }}
+            </li>
+            <li>
+                {% with votes=thread.get_votes %}
+                <span class="likestatus">
+                    <span class="wg21-icon wg21-icon--likes" aria-hidden="true"></span>
+                    <span class="sr-only">{% trans "likes" %}</span>
+                    {% widthratio votes.dislikes 1 -1 as dislikes %}
+                    {{ votes.likes|add:dislikes }}
+                </span>
+                {% endwith %}
+            </li>
+        </ul>
+    </footer>
+</article>
+{% endwith %}
+{% endwith %}
