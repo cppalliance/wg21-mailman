@@ -21,6 +21,13 @@
       breadcrumb_current - Optional extra crumb after breadcrumb_label
                            (overview passes the list display name). When
                            omitted, breadcrumb_label is the current page.
+      breadcrumb_parent  - Optional middle crumb, shown between
+                           breadcrumb_label and breadcrumb_current (All
+                           Threads passes the list display name here). Ignored
+                           unless breadcrumb_current is also set.
+      breadcrumb_parent_url - Optional already-resolved URL for
+                           breadcrumb_parent. Without it the middle crumb
+                           renders as plain text.
       mlist            - Optional MailingList; when set with search_action,
                          search is scoped to that list and the placeholder /
                          hidden input reflect it. Does not affect breadcrumbs.
@@ -47,6 +54,13 @@
                 <nav class="wg21-breadcrumb" aria-label="{% trans 'Breadcrumb' %}">
                     {% if breadcrumb_current %}
                         <a href="{% url brand_url %}" class="wg21-breadcrumb__item">{{ breadcrumb_label }}</a>
+                        {% if breadcrumb_parent %}
+                            {% if breadcrumb_parent_url %}
+                                <a href="{{ breadcrumb_parent_url }}" class="wg21-breadcrumb__item">{{ breadcrumb_parent }}</a>
+                            {% else %}
+                                <span class="wg21-breadcrumb__item">{{ breadcrumb_parent }}</span>
+                            {% endif %}
+                        {% endif %}
                         <span class="wg21-breadcrumb__item wg21-breadcrumb__item--current" aria-current="page">
                             {{ breadcrumb_current }}
                         </span>

@@ -23,19 +23,19 @@
             </span>
             <ul class="list-unstyled list-stats wg21-thread__stats">
                 <li>
-                    <span class="wg21-overview__icon wg21-overview__icon--user" aria-hidden="true"></span>
+                    <span class="wg21-icon wg21-icon--user" aria-hidden="true"></span>
                     <span class="sr-only">{% trans "participants" %}</span>
                     {{ thread.participants_count }}
                 </li>
                 <li>
-                    <span class="wg21-overview__icon wg21-overview__icon--chat" aria-hidden="true"></span>
+                    <span class="wg21-icon wg21-icon--chat" aria-hidden="true"></span>
                     <span class="sr-only">{% trans "replies" %}</span>
                     {{ thread|num_comments }}
                 </li>
                 <li>
                     {% with votes=thread.get_votes %}
                     <span class="likestatus">
-                        <span class="wg21-overview__icon wg21-overview__icon--likes" aria-hidden="true"></span>
+                        <span class="wg21-icon wg21-icon--likes" aria-hidden="true"></span>
                         <span class="sr-only">{% trans "likes" %}</span>
                         {% widthratio votes.dislikes 1 -1 as dislikes %}
                         {{ votes.likes|add:dislikes }}
