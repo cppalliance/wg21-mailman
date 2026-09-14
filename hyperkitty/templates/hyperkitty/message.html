@@ -1,0 +1,81 @@
+{% extends "hyperkitty/base.html" %}
+{% load i18n %}
+{% load hk_generic %}
+{% load static %}
+
+{% comment %}
+    Overrides HyperKitty 1.3.12 hyperkitty/message.html (permalink page).
+    Same marble chrome, gold serif title, and 70/30 card sidebar as Thread
+    Detail. container-xxl is kept as a JS hook for votes/quotes.
+
+    Navbar breadcrumb: Archives › list › Message.
+{% endcomment %}
+
+{% block head_title %}
+{{ message.subject }} - {{ mlist.display_name|default:mlist.name }} - {{ block.super }}
+{% endblock %}
+
+{% block additional_stylesheets %}
+    <link rel="stylesheet" href="{% static 'wg21/css/threads.css' %}" />
+    <link rel="stylesheet" href="{% static 'wg21/css/thread-detail-page.css' %}" />
+{% endblock %}
+
+{% block body_class %}wg21-page-thread-detail{% endblock %}
+
+{% block wg21_navbar %}
+    {% trans 'Archives' as breadcrumb_label %}
+    {% trans 'Message' as message_crumb_label %}
+    {% url 'hk_list_overview' mlist_fqdn=mlist.name as list_overview_url %}
+    {% firstof mlist.display_name mlist.name|until:"@" as list_crumb %}
+    {% include 'wg21/navbar.html' with brand_url='hk_root' breadcrumb_label=breadcrumb_label breadcrumb_parent=list_crumb breadcrumb_parent_url=list_overview_url breadcrumb_current=message_crumb_label search_action='hk_search' search_query=query mlist=mlist %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-xxl wg21-thread-detail">
+
+    <div class="wg21-thread-detail__rule" aria-hidden="true"></div>
+
+    <header class="wg21-thread-detail__header">
+        <div class="wg21-thread-detail__nav d-flex">
+            <div class="wg21-thread-detail__nav-side">
+                <a class="btn btn-secondary btn-sm"
+                   href="{% url 'hk_thread' threadid=message.thread.thread_id mlist_fqdn=mlist.name %}#{{ message.message_id_hash }}">
+                    <span class="fa fa-chevron-left"></span>
+                    <span class="d-none d-md-inline">{% trans "thread" %}</span>
+                </a>
+            </div>
+            <div class="flex-grow-1 wg21-thread-detail__title-wrap">
+                <h1 class="wg21-thread-detail__title">{{ message.subject|strip_subject:mlist }}</h1>
+            </div>
+            <div class="wg21-thread-detail__nav-side right" aria-hidden="true"></div>
+        </div>
+    </header>
+
+    <div class="wg21-thread-detail__layout">
+        <div class="wg21-thread-detail__main">
+            <div id="thread-content" class="wg21-thread-detail__messages">
+                {% if message.pk == message.thread.starting_email.pk %}
+                {% include 'hyperkitty/messages/message.html' with email=message unfolded='True' show_original_badge=True %}
+                {% else %}
+                {% include 'hyperkitty/messages/message.html' with email=message unfolded='True' %}
+                {% endif %}
+            </div>
+        </div>
+
+        <aside class="wg21-thread-detail__aside" aria-label="{% trans 'Message information' %}">
+            {% include 'hyperkitty/messages/right_col.html' %}
+        </aside>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block additionaljs %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        fold_quotes("#thread-content");
+    });
+</script>
+{% endblock %}
