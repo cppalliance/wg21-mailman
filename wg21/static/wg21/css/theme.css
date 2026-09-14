@@ -22,6 +22,7 @@
     --wg21-surface: oklch(95.51% 0 none);           /* #F0F0F0 */
     --wg21-surface-hover: oklch(90.97% 0 none);     /* #E1E1E1 */
     --wg21-surface-white: oklch(100% 0 none);       /* #ffffff */
+    --wg21-surface-cream: oklch(97.30% 0.0082 91.48); /* #F8F6F0 */
     --wg21-marble: url("../img/marble-bg.png");
 
     /* Text */
