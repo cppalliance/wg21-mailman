@@ -605,6 +605,14 @@ a.wg21-utilitybar__link:focus-visible {
     background: var(--wg21-btn-hover-bg, var(--wg21-btn-bg));
     color: var(--wg21-btn-hover-color, var(--wg21-btn-color));
 }
+
+.wg21-btn .fa {
+  color: var(--wg21-btn-color) !important;
+}
+.wg21-btn:hover .fa {
+  color: var(--wg21-btn-hover-color, var(--wg21-btn-color)) !important;
+}
+
 .wg21-btn--primary {
     --wg21-btn-bg: var(--wg21-navy);
     --wg21-btn-color: var(--wg21-on-navy);
