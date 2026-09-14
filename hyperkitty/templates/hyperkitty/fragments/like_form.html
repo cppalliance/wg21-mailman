@@ -1,0 +1,61 @@
+{% load i18n %}
+
+{% comment %}
+    Overrides HyperKitty 1.3.12 hyperkitty/fragments/like_form.html.
+    Signed-in: both thumbs stay vote links so dislike→like (and the reverse)
+    is one click. The current vote is selected; clicking it cancels (data-vote=0).
+    Thread views set myvote to an int; the permalink page and vote JSON
+    endpoint attach the Vote instance — accept both for AJAX replaceWith.
+    Signed-out: inert counts, not links.
+
+    Counts come from object.votes, not object.get_votes(). HyperKitty caches
+    those totals and rebuilds them in a background job, so the vote AJAX
+    HTML would keep showing the numbers from page load.
+{% endcomment %}
+
+<form method="post" class="likeform"
+      action="{% url 'hk_message_vote' mlist_fqdn=mlist.name message_id_hash=message_id_hash %}">
+{% csrf_token %}
+{% regroup object.votes.all|dictsort:"value" by value as vote_groups %}
+{% with myvote=object.myvote %}
+    {% if user.is_authenticated %}
+        {% if myvote == 1 or myvote.value == 1 %}
+        <a class="youlike vote" href="#cancelvote" data-vote="0" aria-label="{% trans 'Cancel vote' %}">
+            <i class="fa fa-thumbs-up selected" aria-hidden="true"></i>
+            {% filter default:"0" %}{% for g in vote_groups %}{% if g.grouper == 1 %}{{ g.list|length }}{% endif %}{% endfor %}{% endfilter %}
+        </a>
+        <a class="youdislike vote" href="#dislike" data-vote="-1" aria-label="{% trans 'Dislike' %}">
+            <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
+            {% filter default:"0" %}{% for g in vote_groups %}{% if g.grouper == -1 %}{{ g.list|length }}{% endif %}{% endfor %}{% endfilter %}
+        </a>
+        {% elif myvote == -1 or myvote.value == -1 %}
+        <a class="youlike vote" href="#like" data-vote="1" aria-label="{% trans 'Like' %}">
+            <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+            {% filter default:"0" %}{% for g in vote_groups %}{% if g.grouper == 1 %}{{ g.list|length }}{% endif %}{% endfor %}{% endfilter %}
+        </a>
+        <a class="youdislike vote" href="#cancelvote" data-vote="0" aria-label="{% trans 'Cancel vote' %}">
+            <i class="fa fa-thumbs-down selected" aria-hidden="true"></i>
+            {% filter default:"0" %}{% for g in vote_groups %}{% if g.grouper == -1 %}{{ g.list|length }}{% endif %}{% endfor %}{% endfilter %}
+        </a>
+        {% else %}
+        <a class="youlike vote" href="#like" data-vote="1" aria-label="{% trans 'Like' %}">
+            <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+            {% filter default:"0" %}{% for g in vote_groups %}{% if g.grouper == 1 %}{{ g.list|length }}{% endif %}{% endfor %}{% endfilter %}
+        </a>
+        <a class="youdislike vote" href="#dislike" data-vote="-1" aria-label="{% trans 'Dislike' %}">
+            <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
+            {% filter default:"0" %}{% for g in vote_groups %}{% if g.grouper == -1 %}{{ g.list|length }}{% endif %}{% endfor %}{% endfilter %}
+        </a>
+        {% endif %}
+    {% else %}
+        <span class="youlike vote disabled" title="{% trans 'You must be logged-in to vote.' %}">
+            <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+            {% filter default:"0" %}{% for g in vote_groups %}{% if g.grouper == 1 %}{{ g.list|length }}{% endif %}{% endfor %}{% endfilter %}
+        </span>
+        <span class="youdislike vote disabled" title="{% trans 'You must be logged-in to vote.' %}">
+            <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
+            {% filter default:"0" %}{% for g in vote_groups %}{% if g.grouper == -1 %}{{ g.list|length }}{% endif %}{% endfor %}{% endfilter %}
+        </span>
+    {% endif %}
+{% endwith %}
+</form>

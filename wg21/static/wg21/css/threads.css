@@ -1,5 +1,6 @@
-/* WG21 thread cards — shared by the list overview and the All Threads page.
- * Loaded from overview.html and thread_list.html (never from base.html).
+/* WG21 thread cards — shared by the list overview, All Threads page,
+ * Thread Detail, and the permalink page card. Loaded from those templates
+ * (never from base.html).
  *
  * Two row variants share this card:
  *   .wg21-thread            compact  — whole row is an <a> (overview fragment)
@@ -189,7 +190,7 @@ ul.list-stats.wg21-icon-metrics li {
     position: relative;
     display: flex;
     flex-direction: column;
-    border: var(--wg21-frame-gold-width) solid var(--wg21-gold-border);
+    border: var(--wg21-frame-gold-width) solid var(--wg21-gold-border) !important;
     border-radius: var(--wg21-radius-lg);
     background: var(--wg21-surface-white);
     box-shadow: var(--wg21-shadow-card);
@@ -258,11 +259,17 @@ ul.list-stats.wg21-icon-metrics li {
     flex-direction: column;
     gap: 0.15em;
     min-inline-size: 0;
+    align-items: flex-start;
 }
-.wg21-thread-card__sender {
+.wg21-thread-card__sender,
+.wg21-thread-card h2.wg21-thread-card__sender {
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-body);
     font-weight: 600;
     color: var(--wg21-ink);
     overflow-wrap: anywhere;
+    margin: 0;
+    line-height: 1.35;
 }
 .wg21-thread-card__time {
     color: var(--wg21-muted);
@@ -370,6 +377,192 @@ ul.list-stats.wg21-icon-metrics li {
 }
 .wg21-thread-card__stats .wg21-icon {
     background-color: var(--wg21-gold);
+}
+
+/* ============================================================
+   Thread Detail message card — footer row (likes left, Reply right)
+   ============================================================ */
+.wg21-thread-card.email .email-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-3);
+    width: 100%;
+    float: none;
+}
+.wg21-thread-card.email .email-info::before,
+.wg21-thread-card.email .email-info::after {
+    display: none;
+}
+.wg21-thread-card__footer-start {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-4);
+    min-inline-size: 0;
+    float: none;
+}
+.wg21-thread-card__footer-start .likeform {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-2);
+    margin: 0;
+}
+.wg21-thread-card__footer-start .likeform a,
+.wg21-thread-card__footer-start .likeform .vote.disabled {
+    color: var(--wg21-muted);
+    text-decoration: none;
+}
+.wg21-thread-card__footer-start .likeform a:hover {
+    color: var(--wg21-ink);
+}
+.wg21-thread-card__footer-start .likeform a:has(.selected) {
+    color: var(--wg21-ink);
+}
+.wg21-thread-card__footer-start .likeform .vote.disabled,
+.wg21-thread-card__footer-start .likeform .vote.disabled:hover {
+    cursor: not-allowed;
+    color: var(--wg21-muted);
+    opacity: 0.55;
+}
+/* Beat HyperKitty `.email-info .messagelink`: italic gray + grey hover pill. */
+.wg21-thread-card.email .email-info a.wg21-thread-card__permalink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    margin: 0;
+    padding: 0;
+    color: var(--wg21-link);
+    background: transparent;
+    border-radius: 0;
+    font-size: var(--wg21-fs-sm);
+    font-style: normal;
+    text-decoration: none;
+}
+.wg21-thread-card.email .email-info a.wg21-thread-card__permalink .fa,
+.wg21-thread-card.email .email-info a.wg21-thread-card__permalink span {
+    color: inherit;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+}
+.wg21-thread-card.email .email-info a.wg21-thread-card__permalink:hover,
+.wg21-thread-card.email .email-info a.wg21-thread-card__permalink:focus-visible {
+    color: var(--wg21-gold);
+    background: transparent;
+    text-decoration: none;
+}
+.wg21-thread-card__reply {
+    margin-inline-start: auto;
+    flex-shrink: 0;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.wg21-thread-card.email a.reply.wg21-btn {
+    border-radius: var(--wg21-radius-lg);
+}
+.wg21-thread-card.email a.reply.wg21-btn:hover,
+.wg21-thread-card.email a.reply.wg21-btn:focus {
+    text-decoration: none;
+    background: var(--wg21-btn-hover-bg, var(--wg21-btn-bg));
+    color: var(--wg21-btn-hover-color, var(--wg21-btn-color));
+}
+.wg21-thread-card__reply:hover,
+.wg21-thread-card__reply:focus {
+    text-decoration: none;
+}
+.wg21-thread-card.email .email-info > .reply-form,
+.wg21-thread-card.email .email-info > .reply-form-unauthenticated,
+.wg21-thread-card.email .email-info > .attachments.dropdown {
+    flex-basis: 100%;
+    width: 100%;
+}
+.wg21-thread-card__attachments,
+.wg21-thread-card__attachments-inline {
+    font-size: var(--wg21-fs-sm);
+    color: var(--wg21-muted);
+}
+.wg21-thread-card__attachments {
+    margin-block-start: var(--wg21-space-4);
+}
+.wg21-thread-card__subject-change {
+    margin: 0 0 var(--wg21-space-3);
+    font-size: var(--wg21-fs-sm);
+    color: var(--wg21-muted);
+}
+.wg21-thread-card.email .email-info > .reply-form {
+    margin-block-start: var(--wg21-space-3);
+    padding-block-start: var(--wg21-space-2);
+}
+.wg21-thread-card.email .reply-form,
+.wg21-thread-card.email .reply-form-unauthenticated {
+    text-align: start;
+}
+.wg21-thread-card.email .reply-form form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-2);
+}
+.wg21-thread-card.email .reply-form .reply-tools,
+.wg21-thread-card.email .reply-form p.buttons,
+.wg21-thread-card.email .reply-form-unauthenticated {
+    text-align: start;
+    margin: 0;
+}
+.wg21-thread-card.email .reply-form .reply-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-2);
+    padding: 0;
+}
+.wg21-thread-card.email .reply-form .reply-tools > li {
+    margin: 0;
+    padding: 0;
+}
+.wg21-thread-card.email .reply-form p.new-subject,
+.wg21-thread-card.email .reply-form p.message-text,
+.wg21-thread-card.email .reply-form p.buttons {
+    margin: 0;
+}
+.wg21-thread-card.email .reply-form textarea,
+.wg21-thread-card.email .reply-form input[type="text"] {
+    width: 100%;
+}
+
+/* Beat HyperKitty .email floats inside the WG21 card shell */
+.wg21-thread-card.email {
+    clear: both;
+    margin-block-end: 0;
+}
+.wg21-thread-card.email .email-header {
+    display: flex;
+    float: none;
+    width: auto;
+}
+/* Beat HyperKitty .email-author { margin-left: 0.5em } inside identity row */
+.wg21-thread-card.email .email-author {
+    margin: 0;
+    margin-inline-start: 0;
+}
+.wg21-thread-card.email .email-author .name {
+    font-size: inherit;
+}
+.wg21-thread-card.email .email-info {
+    float: none;
+    width: auto;
+}
+.wg21-thread-card.email .email-body {
+    display: block;
+    float: none;
+    width: auto;
+    overflow: auto;
+    max-width: none;
+}
+.wg21-thread-card.email .email-body.fixed {
+    font-family: var(--wg21-font-mono);
 }
 
 @media (max-width: 767.98px) {
