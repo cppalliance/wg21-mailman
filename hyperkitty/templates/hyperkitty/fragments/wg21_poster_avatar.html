@@ -1,0 +1,15 @@
+{% comment %}
+    WG21 initials avatar — the single person mark used everywhere except the
+    navbar account control, which keeps Gravatar.
+
+    Context (pass with `only`):
+      - name: display name or address; first letter drives the colour
+      - size: optional modifier suffix, e.g. `lg` for the 3rem card variant
+
+    Styled by wg21/css/threads.css (.wg21-poster__avatar). Initials are rendered
+    here rather than by JS so they survive the no-JS / bot rendering path in
+    thread.html.
+{% endcomment %}
+<span class="wg21-poster__avatar{% if size %} wg21-poster__avatar--{{ size }}{% endif %}" data-initial="{{ name|slice:':1'|upper }}" aria-hidden="true">
+    <span class="wg21-poster__initials">{% with parts=name.split %}{% if parts|length > 1 %}{{ parts.0|slice:":1"|upper }}{{ parts|last|slice:":1"|upper }}{% else %}{{ name|slice:":2"|upper }}{% endif %}{% endwith %}</span>
+</span>

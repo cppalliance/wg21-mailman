@@ -115,24 +115,17 @@
     </div>
     {% endif %}
 
-    {% cache 86400 thread_participants_wg21_v2 thread.id %}
+    {% cache 86400 thread_participants_wg21_v3 thread.id %}
     <div id="participants" class="wg21-card wg21-thread-detail__aside-card">
         <h2 id="participants_title" class="wg21-section-label">
             {% trans "Participants" %} ({{ thread.participants_count }})
         </h2>
-        <ul class="wg21-thread-detail__participants list-unstyled">
+        <ul class="wg21-thread-detail__participants wg21-posters list-unstyled">
             {% for participant in thread.participants|sort_by_name %}
             <li class="wg21-thread-detail__participant">
-                <span class="wg21-thread-card__avatar-wrap">
-                    {% gravatar participant.address 48 '' 'gravatar wg21-thread-card__avatar' %}
-                    <span class="wg21-thread-card__avatar wg21-thread-card__avatar--initials"
-                          aria-hidden="true">
-                        {{ participant.name|default:participant.address|slice:":1"|upper }}
-                    </span>
-                </span>
-                <span class="wg21-thread-detail__participant-name">
-                    {{ participant.name|default:participant.address|escapeemail }}
-                </span>
+                {% with participant_name=participant.name|default:participant.address|escapeemail %}
+                {% include 'hyperkitty/fragments/overview_poster.html' with name=participant_name only %}
+                {% endwith %}
             </li>
             {% endfor %}
         </ul>

@@ -3,9 +3,7 @@
     {% if rank %}
         <div class="wg21-poster__rank" aria-hidden="true">#{{ rank }}</div>
     {% endif %}
-    <div class="gravatar wg21-poster__avatar" data-name="{{ name }}">
-        <span class="wg21-poster__initials" aria-hidden="true"></span>
-    </div>
+    {% include 'hyperkitty/fragments/wg21_poster_avatar.html' with name=name only %}
     <div class="gravatar-details wg21-poster__meta">
         <span class="maker-name">
             {% if profile_url %}
@@ -14,6 +12,8 @@
                 {{ name }}
             {% endif %}
         </span>
+        {% if score_label %}
         <span class="score">{{ score_prefix }}{{ score }} {{ score_label }}</span>
+        {% endif %}
     </div>
 </div>

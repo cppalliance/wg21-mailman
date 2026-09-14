@@ -17,13 +17,7 @@
 
     <header class="wg21-thread-card__header">
         <div class="wg21-thread-card__identity">
-            <span class="wg21-thread-card__avatar-wrap">
-                {% if starting_email.sender.address %}
-                    {% gravatar starting_email.sender.address 80 '' 'gravatar wg21-thread-card__avatar' %}
-                {% endif %}
-                <span class="wg21-thread-card__avatar wg21-thread-card__avatar--initials"
-                      aria-hidden="true">{{ sender|slice:":1"|upper }}</span>
-            </span>
+            {% include 'hyperkitty/fragments/wg21_poster_avatar.html' with name=sender size='lg' only %}
 
             <div class="wg21-thread-card__meta">
                 <span class="wg21-thread-card__sender">{{ sender|escapeemail }}</span>

@@ -163,9 +163,11 @@ Retained HyperKitty hooks (do not rename):
             <section id="discussion-maker" class="wg21-card">
                 <h2 class="wg21-section-label">{% trans "Prominent posters" %}</h2>
                 {% trans "kudos" as kudos_label %}
-                {% for author in top_author %}
-                    {% include 'hyperkitty/fragments/overview_poster.html' with name=author.name rank=forloop.counter score=author.kudos score_prefix='+' score_label=kudos_label only %}
-                {% endfor %}
+                <div class="wg21-posters">
+                    {% for author in top_author %}
+                        {% include 'hyperkitty/fragments/overview_poster.html' with name=author.name rank=forloop.counter score=author.kudos score_prefix='+' score_label=kudos_label only %}
+                    {% endfor %}
+                </div>
             </section>
             {% endif %}
 
