@@ -277,15 +277,15 @@ ul.list-stats.wg21-icon-metrics li {
 
 /* ============================================================
    All Threads card (.wg21-thread-card)
-   Gold border, warm header band, white body, stats footer.
+   1px gold shell, cream header/footer, white body.
    ============================================================ */
 .wg21-thread-card {
-    --wg21-thread-card-header-bg: color-mix(in oklab, var(--wg21-gold) 14%, var(--wg21-surface-white));
+    --wg21-thread-card-header-bg: var(--wg21-surface-cream);
     --wg21-thread-card-badge-bg: color-mix(in oklab, var(--wg21-gold) 28%, var(--wg21-surface-white));
     position: relative;
     display: flex;
     flex-direction: column;
-    border: var(--wg21-frame-gold-width) solid var(--wg21-gold-border) !important;
+    border: 1px solid var(--wg21-gold-border) !important;
     border-radius: var(--wg21-radius-lg);
     background: var(--wg21-surface-white);
     box-shadow: var(--wg21-shadow-card);
@@ -308,7 +308,7 @@ ul.list-stats.wg21-icon-metrics li {
     gap: var(--wg21-space-4);
     padding: var(--wg21-space-4) var(--wg21-space-6);
     background: var(--wg21-thread-card-header-bg);
-    border-bottom: 1px solid var(--wg21-gold-border);
+    border-bottom: 1px solid var(--wg21-border);
 }
 .wg21-thread-card__identity {
     display: flex;
@@ -416,19 +416,6 @@ ul.list-stats.wg21-icon-metrics li {
 .wg21-thread-card__footer {
     padding: var(--wg21-space-4) var(--wg21-space-6);
     border-top: 1px solid var(--wg21-border);
-    background: var(--wg21-surface-white);
-}
-
-/* Thread-detail / permalink messages: cream bands, 1px gold shell
-   matching the header divider (All Threads cards keep the 2px frame). */
-.wg21-thread-card.email {
-    --wg21-thread-card-header-bg: var(--wg21-surface-cream);
-    border-width: 1px !important;
-}
-.wg21-thread-card.email .wg21-thread-card__header {
-    border-bottom-color: var(--wg21-border);
-}
-.wg21-thread-card.email .wg21-thread-card__footer {
     background: var(--wg21-surface-cream);
 }
 .wg21-thread-card__stats {
@@ -451,7 +438,7 @@ ul.list-stats.wg21-icon-metrics li {
     padding: 0;
 }
 .wg21-thread-card__stats .wg21-icon {
-    background-color: var(--wg21-gold);
+    background-color: var(--wg21-muted);
 }
 
 /* ============================================================
