@@ -30,6 +30,7 @@ Token values are authored in OKLCH; the original hex is kept in a trailing comme
 - `--wg21-marble: url("../img/marble-bg.png")` - hero/footer marble texture (delivered)
 - `--wg21-surface: oklch(97.03% 0.007 88.64)` /* #f7f5f0 */ - near-white card/marble base color (fallback under marble)
 - `--wg21-surface-white: oklch(100% 0 none)` /* #ffffff */ - plain white content panel
+- `--wg21-surface-cream: oklch(97.30% 0.0082 91.48)` /* #F8F6F0 */ - warm cream for thread message header/footer bands
 
 
 

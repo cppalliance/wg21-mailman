@@ -49,8 +49,8 @@
    Card container
    ============================================================ */
 .wg21-threads.list-group {
-    border: var(--wg21-frame-gold-width) solid var(--wg21-gold);
-    border-radius: var(--wg21-radius);
+    border: 1px solid var(--wg21-gold-border);
+    border-radius: var(--wg21-radius-lg);
     background: var(--wg21-surface-white);
     display: flex;
     flex-direction: column;
@@ -86,16 +86,16 @@
     color: inherit;
     outline: var(--wg21-frame-gold-width) solid var(--wg21-gold-accent);
     outline-offset: calc(-1 * var(--wg21-frame-gold-width));
-    border-top-left-radius: var(--wg21-radius);
-    border-top-right-radius: var(--wg21-radius);
+    border-top-left-radius: var(--wg21-radius-lg);
+    border-top-right-radius: var(--wg21-radius-lg);
 }
 .wg21-thread.list-group-item:not(:first-of-type):focus-visible {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
 .wg21-thread.list-group-item:last-of-type:focus-visible {
-    border-bottom-left-radius: var(--wg21-radius);
-    border-bottom-right-radius: var(--wg21-radius);
+    border-bottom-left-radius: var(--wg21-radius-lg);
+    border-bottom-right-radius: var(--wg21-radius-lg);
 }
 .wg21-thread__icon {
     color: var(--wg21-gold);
@@ -417,6 +417,19 @@ ul.list-stats.wg21-icon-metrics li {
     padding: var(--wg21-space-4) var(--wg21-space-6);
     border-top: 1px solid var(--wg21-border);
     background: var(--wg21-surface-white);
+}
+
+/* Thread-detail / permalink messages: cream bands, 1px gold shell
+   matching the header divider (All Threads cards keep the 2px frame). */
+.wg21-thread-card.email {
+    --wg21-thread-card-header-bg: var(--wg21-surface-cream);
+    border-width: 1px !important;
+}
+.wg21-thread-card.email .wg21-thread-card__header {
+    border-bottom-color: var(--wg21-border);
+}
+.wg21-thread-card.email .wg21-thread-card__footer {
+    background: var(--wg21-surface-cream);
 }
 .wg21-thread-card__stats {
     display: flex;
