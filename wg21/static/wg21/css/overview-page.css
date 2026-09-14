@@ -251,57 +251,7 @@
 }
 /* .wg21-icon* mask icons live in threads.css (shared). */
 
-.wg21-poster {
-    display: flex;
-    align-items: center;
-    gap: var(--wg21-space-3);
-    padding-block: var(--wg21-space-2);
-}
-.wg21-poster__avatar,
-.wg21-overview .gravatar.wg21-poster__avatar {
-    width: var(--wg21-space-12);
-    height: var(--wg21-space-12);
-    flex-shrink: 0;
-    border-radius: var(--wg21-radius-pill);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--wg21-navy);
-    color: var(--wg21-white);
-}
-.wg21-poster:nth-child(5n+2) .wg21-poster__avatar { background: var(--wg21-ink); }
-.wg21-poster:nth-child(5n+3) .wg21-poster__avatar { background: var(--wg21-gold); }
-.wg21-poster:nth-child(5n+4) .wg21-poster__avatar { background: var(--wg21-success); }
-.wg21-poster__initials {
-    font-family: var(--wg21-font-body);
-    font-size: var(--wg21-fs-sm);
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    line-height: 1;
-    color: var(--wg21-white);
-}
-.wg21-poster__meta {
-    display: flex;
-    flex-direction: column;
-    min-inline-size: 0;
-    gap: 0.15em;
-}
-.wg21-poster__meta .maker-name,
-.wg21-poster__meta .maker-name a {
-    color: var(--wg21-ink);
-    font-weight: 600;
-    overflow-wrap: anywhere;
-}
-.wg21-poster__meta .score {
-    color: var(--wg21-muted);
-    font-size: var(--wg21-fs-sm);
-    font-weight: 400;
-    font-variant-numeric: tabular-nums;
-}
-.wg21-poster__rank {
-    color: var(--wg21-gold-dark);
-    font-family: var(--wg21-font-serif);
-}
+/* .wg21-poster* lives in threads.css (shared with the thread pages). */
 
 .wg21-overview__extras {
     display: flex;
@@ -362,7 +312,6 @@
     .wg21-tabs { border-bottom: var(--wg21-frame-gold-width) solid CanvasText; }
     .wg21-tabs .nav-pills .nav-link.active { outline: var(--wg21-frame-gold-width) solid CanvasText; }
     .wg21-card { border: 1px solid CanvasText; }
-    .wg21-poster__avatar { border: 1px solid CanvasText; }
     .wg21-overview .chart-data .bars rect {
         fill: CanvasText;
         stroke: CanvasText;

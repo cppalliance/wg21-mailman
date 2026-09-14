@@ -44,6 +44,13 @@
     --wg21-warning: oklch(56.55% 0.1203 67.39);     /* #a4660e */
     --wg21-info: oklch(47.78% 0.1208 251.01);       /* #1c5f9e */
 
+    /* Initials avatars — one colour per leading letter, white letters on all five */
+    --wg21-avatar-green: oklch(37.74% 0.0598 144.28);  /* #2D4A2D */
+    --wg21-avatar-plum: oklch(34.45% 0.0623 326.82);   /* #4A2D4A */
+    --wg21-avatar-slate: oklch(37.45% 0.0562 266.33);  /* #33405F */
+    --wg21-avatar-bronze: oklch(54.47% 0.0911 81.16);  /* #8B6A2A */
+    --wg21-avatar-navy: oklch(30.23% 0.0754 265.69);   /* #1C2C54 */
+
     /* Inputs on dark/navy surfaces (e.g. navbar search field) */
     --wg21-input-on-navy-bg: oklch(0% 0 none / 0.28);      /* rgba(0,0,0,0.28) */
     --wg21-input-on-navy-border: oklch(100% 0 none / 0.18); /* rgba(255,255,255,0.18) */
