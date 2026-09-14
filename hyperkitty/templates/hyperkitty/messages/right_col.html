@@ -1,0 +1,44 @@
+{% load i18n %}
+{% load hk_generic %}
+{% export_allowed as export_allowed %}
+
+{% comment %}
+    Overrides HyperKitty 1.3.12 hyperkitty/messages/right_col.html.
+    WG21 permalink sidebar — same card language as threads/right_col.html.
+
+    Retained HyperKitty hooks: #message-overview-info, staff delete URL.
+{% endcomment %}
+
+<section id="message-overview-info" class="wg21-thread-detail__sidebar">
+
+    <div class="wg21-thread-detail__actions">
+        <a href="{% url 'hk_thread' threadid=message.thread.thread_id mlist_fqdn=mlist.name %}#{{ message.message_id_hash }}"
+           class="wg21-btn wg21-btn--primary">
+            {% trans "Back to the thread" %}
+        </a>
+        <a href="{% url 'hk_list_overview' mlist_fqdn=mlist.name %}" class="wg21-btn wg21-btn--outline">
+            {% trans "List overview" %}
+        </a>
+        {% if 'postorius' in INSTALLED_APPS and user.is_authenticated %}
+        <a class="wg21-btn wg21-btn--outline postorius" href="{% url 'list_summary' mlist.list_id %}">
+            <i class="fa fa-fw fa-inbox" aria-hidden="true"></i>
+            {% trans "Manage subscription" %}
+        </a>
+        {% endif %}
+    </div>
+
+    {% if export and export_allowed or user.is_staff or user.is_superuser or user_is_owner %}
+    <div class="wg21-card wg21-thread-detail__aside-card{% if user.is_staff or user.is_superuser or user_is_owner %} wg21-thread-detail__aside-card--staff{% endif %}">
+        <h2 class="wg21-section-label">{% trans "Actions" %}</h2>
+        <div class="wg21-thread-detail__aside-card-links">
+            {% if export and export_allowed %}
+            <a href="{{ export.url }}" title="{{ export.title }}"><i class="fa fa-fw fa-download" aria-hidden="true"></i>{{ export.message }}</a>
+            {% endif %}
+            {% if user.is_staff or user.is_superuser or user_is_owner %}
+            <a href="{% url 'hk_message_delete' mlist_fqdn=mlist.name message_id_hash=message.message_id_hash %}"><i class="fa fa-fw fa-trash" aria-hidden="true"></i>{% trans "Delete this message" %}</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+</section>
