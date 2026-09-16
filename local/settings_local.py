@@ -46,6 +46,15 @@ if _base is None:
         f"silently ignored. Check the maxking/mailman-web image's settings "
         f"import order."
     )
+# Attach the current Site to each request so templates can read
+# `request.site.domain` (used by wg21/analytics_scripts.html). Mirrors the same
+# line added to ansible-mailman3's settings.py.j2, so local matches production.
+# `get_current_site()` reads through django.contrib.sites' module-level
+# SITE_CACHE, so this is one query per process, not per request.
+MIDDLEWARE = tuple(_base.MIDDLEWARE) + (
+    "django.contrib.sites.middleware.CurrentSiteMiddleware",
+)
+
 _templates = getattr(_base, "TEMPLATES", None)
 if not _templates or not isinstance(_templates, list) or "DIRS" not in _templates[0]:
     raise RuntimeError(

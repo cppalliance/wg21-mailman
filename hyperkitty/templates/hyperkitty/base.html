@@ -29,7 +29,10 @@
         <link rel="stylesheet" href="{% static 'wg21/css/components.css' %}" />
         {% block additional_stylesheets %} {% endblock %}
         {% block head_feed %}{% endblock %}
-        {% include 'hyperkitty/headers.html' %}
+        {# Replaces the packaged hyperkitty/headers.html hook, which is empty upstream #}
+        {# and which ansible-mailman3 tasks/plausible.yml overwrites with its own copy #}
+        {# of the Plausible tag. Including that hook as well would emit the tag twice. #}
+        {% include 'wg21/analytics_scripts.html' %}
     </head>
 
     <body class="{% block body_class %}{% endblock %}">
