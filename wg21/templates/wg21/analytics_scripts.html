@@ -1,12 +1,7 @@
-{# Analytics scripts shared by Postorius and HyperKitty, included inside <head>. #}
-{#                                                                                  #}
-{# The Plausible tag also ships in ansible-mailman3 tasks/plausible.yml, which       #}
-{# writes postorius/base.html and hyperkitty/headers.html. Our custom tasks copy     #}
-{# templates AFTER that role runs, so those two files get overwritten and this repo  #}
-{# has to carry the tag itself.                                                      #}
-{#                                                                                  #}
-{# request.site needs django.contrib.sites.middleware.CurrentSiteMiddleware. The     #}
-{# literal below is the fallback for deployments that do not have it yet, and can be #}
-{# dropped once the middleware is everywhere. Plausible needs the registered domain  #}
-{# exactly, so an empty value here silently disables tracking.                       #}
-<script defer data-domain="{% firstof request.site.domain "lists.wg21.org" %}" src="https://plausible.io/js/script.js"></script>
+{# Analytics tags shared by Postorius and HyperKitty, included inside <head>. #}
+{#                                                                            #}
+{# ansible-mailman3 tasks/plausible.yml also injects this tag, by writing its  #}
+{# own postorius/base.html and hyperkitty/headers.html. We shadow both of      #}
+{# those files, so the role's copies never render and this is the only source. #}
+{# The domain is hardcoded because it is fixed per deployment.                 #}
+<script defer data-domain="lists.wg21.org" src="https://plausible.io/js/script.js"></script>
