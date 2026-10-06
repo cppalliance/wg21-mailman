@@ -1,0 +1,659 @@
+/* WG21 thread cards — shared by the list overview, All Threads page,
+ * Thread Detail, and the permalink page card. Loaded from those templates
+ * (never from base.html).
+ *
+ * Two row variants share this card:
+ *   .wg21-thread            compact  — whole row is an <a> (overview fragment)
+ *   .wg21-thread--large     extended — avatar, sender, excerpt; the title
+ *                                      carries the link and a stretched
+ *                                      overlay makes the card clickable.
+ *
+ * Also holds the mask-icon primitive (.wg21-icon*) used by these cards and by
+ * the overview stat lists, so both pages get it from one place. */
+
+/* ============================================================
+   Mask icons
+   ============================================================ */
+.wg21-icon {
+    display: inline-block;
+    width: 1.25em;
+    height: 1.25em;
+    flex-shrink: 0;
+    background-color: var(--wg21-gold);
+    -webkit-mask: center / contain no-repeat;
+            mask: center / contain no-repeat;
+    vertical-align: middle;
+}
+.wg21-icon--users {
+    -webkit-mask-image: url("../img/user_group.svg");
+            mask-image: url("../img/user_group.svg");
+}
+.wg21-icon--comments {
+    -webkit-mask-image: url("../img/comment.svg");
+            mask-image: url("../img/comment.svg");
+}
+.wg21-icon--user {
+    -webkit-mask-image: url("../img/user_alt.svg");
+            mask-image: url("../img/user_alt.svg");
+}
+.wg21-icon--chat {
+    -webkit-mask-image: url("../img/chat_alt_3.svg");
+            mask-image: url("../img/chat_alt_3.svg");
+}
+.wg21-icon--likes {
+    -webkit-mask-image: url("../img/thumb_up.svg");
+            mask-image: url("../img/thumb_up.svg");
+}
+
+/* ============================================================
+   Card container
+   ============================================================ */
+.wg21-threads.list-group {
+    border: 1px solid var(--wg21-gold-border);
+    border-radius: var(--wg21-radius-lg);
+    background: var(--wg21-surface-white);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ============================================================
+   Row — shared between both variants
+   ============================================================ */
+.wg21-thread.list-group-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--wg21-space-4);
+    align-items: center;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--wg21-border);
+    border-radius: 0;
+    color: inherit;
+    min-height: var(--wg21-touch);
+    padding: var(--wg21-space-4);
+}
+.wg21-thread.list-group-item:last-child {
+    border-bottom: none;
+}
+.wg21-thread.list-group-item:hover,
+.wg21-thread.list-group-item:focus {
+    background: var(--wg21-surface);
+    color: inherit;
+}
+.wg21-thread.list-group-item:focus-visible {
+    background: var(--wg21-surface);
+    color: inherit;
+    outline: var(--wg21-frame-gold-width) solid var(--wg21-gold-accent);
+    outline-offset: calc(-1 * var(--wg21-frame-gold-width));
+    border-top-left-radius: var(--wg21-radius-lg);
+    border-top-right-radius: var(--wg21-radius-lg);
+}
+.wg21-thread.list-group-item:not(:first-of-type):focus-visible {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.wg21-thread.list-group-item:last-of-type:focus-visible {
+    border-bottom-left-radius: var(--wg21-radius-lg);
+    border-bottom-right-radius: var(--wg21-radius-lg);
+}
+.wg21-thread__icon {
+    color: var(--wg21-gold);
+    font-size: var(--wg21-fs-lead);
+    line-height: 1.4;
+    width: var(--wg21-space-6);
+    text-align: center;
+}
+.overview .wg21-threads .wg21-thread__title .fa-envelope,
+.wg21-thread__icon .fa-envelope,
+.wg21-thread__icon .fa-envelope-o {
+    color: var(--wg21-gold);
+}
+.wg21-thread__title,
+.overview .list-group h3.wg21-thread__title {
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-lead);
+    font-weight: 600;
+    color: var(--wg21-ink);
+    margin: 0;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
+}
+.wg21-thread__time {
+    display: block;
+    color: var(--wg21-gold);
+    margin-top: var(--wg21-space-1);
+}
+.wg21-thread__stats {
+    display: flex;
+    align-items: center;
+    gap: var(--wg21-space-4);
+    margin: 0;
+    color: var(--wg21-muted);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--wg21-fs-sm);
+    white-space: nowrap;
+}
+.wg21-thread__stats li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    font-size: var(--wg21-fs-body);
+}
+.wg21-thread__stats .fa { color: var(--wg21-muted); font-weight: 400; }
+.wg21-thread__stats .wg21-icon {
+    background-color: var(--wg21-muted);
+}
+
+.wg21-empty {
+    color: var(--wg21-muted);
+    margin: var(--wg21-space-4) 0;
+}
+
+/* Icon + value stat list (sidebar cards on both pages). The `ul.list-stats`
+ * part beats hyperkitty's own .list-stats padding. */
+ul.list-stats.wg21-icon-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-1) var(--wg21-space-4);
+    margin: 0;
+    color: var(--wg21-ink);
+    font-size: var(--wg21-fs-sm);
+    padding: 0;
+}
+ul.list-stats.wg21-icon-metrics li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wg21-space-1);
+    padding-inline: unset;
+    margin-inline-end: unset;
+}
+
+/* ============================================================
+   All Threads stack — spaced cards (not a single list-group shell)
+   ============================================================ */
+.wg21-thread-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-4); /* 1rem */
+}
+
+/* ============================================================
+   Poster (.wg21-poster) — the shared person mark: initials avatar,
+   name, optional rank and score. Used by the overview sidebar lists,
+   thread Participants, All Threads cards and message cards, so it
+   lives here rather than in overview-page.css.
+   ============================================================ */
+.wg21-posters {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.wg21-poster {
+    display: flex;
+    align-items: center;
+    gap: var(--wg21-space-3);
+    padding-block: var(--wg21-space-2);
+}
+.wg21-poster__avatar {
+    inline-size: var(--wg21-space-12);
+    block-size: var(--wg21-space-12);
+    flex-shrink: 0;
+    border-radius: var(--wg21-radius-pill);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--wg21-white);
+    background: var(--wg21-avatar-navy);
+}
+/* Card headers size independently of the sidebar spacing scale, even though
+   both currently resolve to 3rem. */
+.wg21-poster__avatar--lg {
+    inline-size: 3rem;
+    block-size: 3rem;
+}
+
+/* Colour follows the leading letter so one author keeps one colour across
+   pages. A-E repeating; the base rule covers digits and non-Latin names. */
+.wg21-poster__avatar[data-initial="A"],
+.wg21-poster__avatar[data-initial="F"],
+.wg21-poster__avatar[data-initial="K"],
+.wg21-poster__avatar[data-initial="P"],
+.wg21-poster__avatar[data-initial="U"],
+.wg21-poster__avatar[data-initial="Z"] { background: var(--wg21-avatar-green); }
+.wg21-poster__avatar[data-initial="B"],
+.wg21-poster__avatar[data-initial="G"],
+.wg21-poster__avatar[data-initial="L"],
+.wg21-poster__avatar[data-initial="Q"],
+.wg21-poster__avatar[data-initial="V"] { background: var(--wg21-avatar-plum); }
+.wg21-poster__avatar[data-initial="C"],
+.wg21-poster__avatar[data-initial="H"],
+.wg21-poster__avatar[data-initial="M"],
+.wg21-poster__avatar[data-initial="R"],
+.wg21-poster__avatar[data-initial="W"] { background: var(--wg21-avatar-slate); }
+.wg21-poster__avatar[data-initial="D"],
+.wg21-poster__avatar[data-initial="I"],
+.wg21-poster__avatar[data-initial="N"],
+.wg21-poster__avatar[data-initial="S"],
+.wg21-poster__avatar[data-initial="X"] { background: var(--wg21-avatar-bronze); }
+.wg21-poster__avatar[data-initial="E"],
+.wg21-poster__avatar[data-initial="J"],
+.wg21-poster__avatar[data-initial="O"],
+.wg21-poster__avatar[data-initial="T"],
+.wg21-poster__avatar[data-initial="Y"] { background: var(--wg21-avatar-navy); }
+
+.wg21-poster__initials {
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-sm);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--wg21-white);
+}
+.wg21-poster__meta {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    gap: 0.15em;
+}
+.wg21-poster__meta .maker-name,
+.wg21-poster__meta .maker-name a {
+    color: var(--wg21-ink);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+.wg21-poster__meta .score {
+    color: var(--wg21-muted);
+    font-size: var(--wg21-fs-sm);
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+}
+.wg21-poster__rank {
+    color: var(--wg21-gold-dark);
+    font-family: var(--wg21-font-serif);
+}
+
+/* ============================================================
+   All Threads card (.wg21-thread-card)
+   1px gold shell, cream header/footer, white body.
+   ============================================================ */
+.wg21-thread-card {
+    --wg21-thread-card-header-bg: var(--wg21-surface-cream);
+    --wg21-thread-card-badge-bg: color-mix(in oklab, var(--wg21-gold) 28%, var(--wg21-surface-white));
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--wg21-gold-border) !important;
+    border-radius: var(--wg21-radius-lg);
+    background: var(--wg21-surface-white);
+    box-shadow: var(--wg21-shadow-card);
+    overflow: hidden;
+    color: inherit;
+}
+.wg21-thread-card:focus-within {
+    outline: 1px solid var(--wg21-gold-accent);
+    outline-offset: 2px;
+}
+.wg21-thread-card--unread {
+    box-shadow: var(--wg21-shadow-card),
+                inset 1px 0 0 0 var(--wg21-gold);
+}
+
+.wg21-thread-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--wg21-space-4);
+    padding: var(--wg21-space-4) var(--wg21-space-6);
+    background: var(--wg21-thread-card-header-bg);
+    border-bottom: 1px solid var(--wg21-border);
+}
+.wg21-thread-card__identity {
+    display: flex;
+    align-items: center;
+    gap: var(--wg21-space-4);
+    min-inline-size: 0;
+}
+.wg21-thread-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15em;
+    min-inline-size: 0;
+    align-items: flex-start;
+}
+.wg21-thread-card__sender,
+.wg21-thread-card h2.wg21-thread-card__sender {
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-body);
+    font-weight: 600;
+    color: var(--wg21-ink);
+    overflow-wrap: anywhere;
+    margin: 0;
+    line-height: 1.35;
+}
+.wg21-thread-card__time {
+    color: var(--wg21-muted);
+    font-size: var(--wg21-fs-sm);
+    white-space: nowrap;
+}
+.wg21-thread-card__badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15em 0.75em;
+    border-radius: 9999px;
+    background: var(--wg21-thread-card-badge-bg);
+    color: var(--wg21-gold-dark);
+    font-size: var(--wg21-fs-sm);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    border: 1px solid var(--wg21-gold-border);
+}
+
+.wg21-thread-card__body {
+    padding: var(--wg21-space-6);
+    background: var(--wg21-surface-white);
+}
+.wg21-thread-card__title,
+.wg21-thread-card h3.wg21-thread-card__title {
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-lead);
+    font-weight: 600;
+    color: var(--wg21-ink);
+    margin: 0 0 var(--wg21-space-3);
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
+}
+.wg21-thread-card__link {
+    color: inherit;
+    text-decoration: none;
+}
+.wg21-thread-card__link:hover,
+.wg21-thread-card__link:focus {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+.wg21-thread-card__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+.wg21-thread-card__link:focus-visible {
+    outline: none;
+}
+.wg21-thread-card__star {
+    color: var(--wg21-gold);
+    margin-inline-end: 0.25em;
+}
+.wg21-thread-card__excerpt {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+    color: var(--wg21-body);
+    font-size: var(--wg21-fs-body);
+    font-weight: 400;
+    line-height: var(--wg21-lh-base);
+    overflow-wrap: anywhere;
+}
+.wg21-thread-card__excerpt,
+.wg21-thread-card__excerpt p,
+.wg21-thread-card__excerpt strong,
+.wg21-thread-card__excerpt b {
+    font-weight: 400;
+}
+.wg21-thread-card__excerpt a {
+    position: relative;
+    z-index: 2;
+}
+
+.wg21-thread-card__footer {
+    padding: var(--wg21-space-4) var(--wg21-space-6);
+    border-top: 1px solid var(--wg21-border);
+    background: var(--wg21-surface-cream);
+}
+.wg21-thread-card__stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-4);
+    margin: 0;
+    padding: 0;
+    color: var(--wg21-muted);
+    font-size: var(--wg21-fs-sm);
+    font-variant-numeric: tabular-nums;
+    float: none; /* beat hyperkitty ul.list-stats */
+}
+.wg21-thread-card__stats li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    margin: 0;
+    padding: 0;
+}
+.wg21-thread-card__stats .wg21-icon {
+    background-color: var(--wg21-muted);
+}
+
+/* ============================================================
+   Thread Detail message card — footer row (likes left, Reply right)
+   ============================================================ */
+.wg21-thread-card.email .email-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-3);
+    width: 100%;
+    float: none;
+}
+.wg21-thread-card.email .email-info::before,
+.wg21-thread-card.email .email-info::after {
+    display: none;
+}
+.wg21-thread-card__footer-start {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-4);
+    min-inline-size: 0;
+    float: none;
+}
+.wg21-thread-card__footer-start .likeform {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-2);
+    margin: 0;
+}
+.wg21-thread-card__footer-start .likeform a,
+.wg21-thread-card__footer-start .likeform .vote.disabled {
+    color: var(--wg21-muted);
+    text-decoration: none;
+}
+.wg21-thread-card__footer-start .likeform a:hover {
+    color: var(--wg21-ink);
+}
+.wg21-thread-card__footer-start .likeform a:has(.selected) {
+    color: var(--wg21-ink);
+}
+.wg21-thread-card__footer-start .likeform .vote.disabled,
+.wg21-thread-card__footer-start .likeform .vote.disabled:hover {
+    cursor: not-allowed;
+    color: var(--wg21-muted);
+    opacity: 0.55;
+}
+/* Beat HyperKitty `.email-info .messagelink`: italic gray + grey hover pill. */
+.wg21-thread-card.email .email-info a.wg21-thread-card__permalink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    margin: 0;
+    padding: 0;
+    color: var(--wg21-link);
+    background: transparent;
+    border-radius: 0;
+    font-size: var(--wg21-fs-sm);
+    font-style: normal;
+    text-decoration: none;
+}
+.wg21-thread-card.email .email-info a.wg21-thread-card__permalink .fa,
+.wg21-thread-card.email .email-info a.wg21-thread-card__permalink span {
+    color: inherit;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+}
+.wg21-thread-card.email .email-info a.wg21-thread-card__permalink:hover,
+.wg21-thread-card.email .email-info a.wg21-thread-card__permalink:focus-visible {
+    color: var(--wg21-gold);
+    background: transparent;
+    text-decoration: none;
+}
+.wg21-thread-card__reply {
+    margin-inline-start: auto;
+    flex-shrink: 0;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.wg21-thread-card.email a.reply.wg21-btn {
+    border-radius: var(--wg21-radius-lg);
+}
+.wg21-thread-card.email a.reply.wg21-btn:hover,
+.wg21-thread-card.email a.reply.wg21-btn:focus {
+    text-decoration: none;
+    background: var(--wg21-btn-hover-bg, var(--wg21-btn-bg));
+    color: var(--wg21-btn-hover-color, var(--wg21-btn-color));
+}
+.wg21-thread-card__reply:hover,
+.wg21-thread-card__reply:focus {
+    text-decoration: none;
+}
+.wg21-thread-card.email .email-info > .reply-form,
+.wg21-thread-card.email .email-info > .reply-form-unauthenticated,
+.wg21-thread-card.email .email-info > .attachments.dropdown {
+    flex-basis: 100%;
+    width: 100%;
+}
+.wg21-thread-card__attachments,
+.wg21-thread-card__attachments-inline {
+    font-size: var(--wg21-fs-sm);
+    color: var(--wg21-muted);
+}
+.wg21-thread-card__attachments {
+    margin-block-start: var(--wg21-space-4);
+}
+.wg21-thread-card__subject-change {
+    margin: 0 0 var(--wg21-space-3);
+    font-size: var(--wg21-fs-sm);
+    color: var(--wg21-muted);
+}
+.wg21-thread-card.email .email-info > .reply-form {
+    margin-block-start: var(--wg21-space-3);
+    padding-block-start: var(--wg21-space-2);
+}
+.wg21-thread-card.email .reply-form,
+.wg21-thread-card.email .reply-form-unauthenticated {
+    text-align: start;
+}
+.wg21-thread-card.email .reply-form form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-2);
+}
+.wg21-thread-card.email .reply-form .reply-tools,
+.wg21-thread-card.email .reply-form p.buttons,
+.wg21-thread-card.email .reply-form-unauthenticated {
+    text-align: start;
+    margin: 0;
+}
+.wg21-thread-card.email .reply-form .reply-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-2);
+    padding: 0;
+}
+.wg21-thread-card.email .reply-form .reply-tools > li {
+    margin: 0;
+    padding: 0;
+}
+.wg21-thread-card.email .reply-form p.new-subject,
+.wg21-thread-card.email .reply-form p.message-text,
+.wg21-thread-card.email .reply-form p.buttons {
+    margin: 0;
+}
+.wg21-thread-card.email .reply-form textarea,
+.wg21-thread-card.email .reply-form input[type="text"] {
+    width: 100%;
+}
+
+/* Beat HyperKitty .email floats inside the WG21 card shell */
+.wg21-thread-card.email {
+    clear: both;
+    margin-block-end: 0;
+}
+.wg21-thread-card.email .email-header {
+    display: flex;
+    float: none;
+    width: auto;
+}
+/* Beat HyperKitty .email-author { margin-left: 0.5em } inside identity row */
+.wg21-thread-card.email .email-author {
+    margin: 0;
+    margin-inline-start: 0;
+}
+.wg21-thread-card.email .email-author .name {
+    font-size: inherit;
+}
+.wg21-thread-card.email .email-info {
+    float: none;
+    width: auto;
+}
+.wg21-thread-card.email .email-body {
+    display: block;
+    float: none;
+    width: auto;
+    overflow: auto;
+    max-width: none;
+}
+.wg21-thread-card.email .email-body.fixed {
+    font-family: var(--wg21-font-mono);
+}
+
+@media (max-width: 767.98px) {
+    .wg21-thread.list-group-item {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+    .wg21-thread__stats {
+        grid-column: 2;
+    }
+    .wg21-thread-card__header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .wg21-thread-card__badge {
+        align-self: flex-start;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wg21-thread,
+    .wg21-thread-card {
+        transition: none;
+    }
+}
+
+@media (forced-colors: active) {
+    .wg21-threads.list-group { border: 1px solid CanvasText; }
+    .wg21-icon { background-color: CanvasText; }
+    .wg21-thread-card { border: 1px solid CanvasText; }
+    .wg21-thread-card__header { border-bottom-color: CanvasText; }
+    .wg21-poster__avatar { border: 1px solid CanvasText; }
+}

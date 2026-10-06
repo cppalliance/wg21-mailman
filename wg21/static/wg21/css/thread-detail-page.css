@@ -1,0 +1,438 @@
+/* WG21 Thread Detail + permalink page (page-owned).
+ * Loaded from thread.html and message.html. Message card rules live in
+ * threads.css; shared primitives (.wg21-card, .wg21-section-label, .wg21-btn)
+ * in components.css.
+ *
+ * No overview tab bar — the double-gold band below (.wg21-thread-detail__rule)
+ * carries the same chrome as All Threads. */
+
+.wg21-page-thread-detail .wg21-content {
+    padding-block-start: 0;
+    background-color: var(--wg21-surface);
+    background-image: var(--wg21-marble);
+    background-size: cover;
+    background-position: center;
+}
+
+.wg21-page-thread-detail .wg21-navbar {
+    border-bottom: none;
+}
+
+.wg21-page-thread-detail footer {
+    margin-top: 0;
+}
+
+/* Double gold rule — geometry matches .wg21-thread-list__rule. */
+.wg21-thread-detail__rule {
+    --wg21-tabs-rule: var(--wg21-frame-gap);
+    --wg21-tabs-rule-band: 9px;
+    --wg21-tabs-rule-offset: 15px;
+    --wg21-tabs-rule-thin: 3px;
+    position: relative;
+    background: var(--wg21-surface);
+    border-bottom: var(--wg21-tabs-rule) solid var(--wg21-gold);
+    margin-inline: calc(-1 * var(--wg21-space-6));
+    padding-inline: var(--wg21-space-6);
+    margin-block-end: var(--wg21-space-8);
+    min-block-size: var(--wg21-space-2);
+}
+.wg21-thread-detail__rule::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: calc(-1 * var(--wg21-tabs-rule-offset));
+    height: var(--wg21-tabs-rule-band);
+    background-color: var(--wg21-surface);
+    border-block-end: var(--wg21-tabs-rule-thin) solid var(--wg21-gold-border);
+    pointer-events: none;
+}
+
+/* Two-column body (~70/30), matching All Threads / overview. */
+.wg21-thread-detail__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(16rem, 3fr);
+    gap: var(--wg21-space-12);
+    align-items: start;
+    padding-inline: var(--wg21-space-2);
+}
+.wg21-thread-detail__main,
+.wg21-thread-detail__aside {
+    min-inline-size: 0;
+}
+
+.wg21-thread-detail__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-4);
+    align-self: start;
+}
+.wg21-thread-detail__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-4);
+}
+.wg21-thread-detail__aside .wg21-card {
+    border: 1px solid var(--wg21-border);
+}
+
+/* HyperKitty JS binds votes/quotes to div.container-xxl; neutralize Bootstrap. */
+.wg21-thread-detail.container-xxl {
+    max-width: none;
+    width: 100%;
+    padding-inline: 0;
+}
+
+/* Header: retained HyperKitty newer/older row + WG21 title/meta. */
+.wg21-thread-detail__header {
+    margin-block-end: var(--wg21-space-8);
+    padding-inline: var(--wg21-space-2);
+}
+.wg21-thread-detail__nav {
+    align-items: flex-start;
+    gap: var(--wg21-space-4);
+}
+.wg21-thread-detail__nav-side {
+    flex: 0 0 auto;
+    max-width: 8rem;
+}
+.wg21-thread-detail__nav-side:empty {
+    flex-basis: 8rem;
+    min-inline-size: 5rem;
+}
+.wg21-thread-detail__title-wrap {
+    text-align: center;
+    min-inline-size: 0;
+}
+.wg21-thread-detail__title,
+.wg21-thread-detail h1.wg21-thread-detail__title {
+    font-family: var(--wg21-font-serif);
+    font-size: 2.5rem !important;
+    font-weight: 400;
+    line-height: var(--wg21-lh-tight);
+    color: var(--wg21-gold);
+    margin: 0;
+    text-wrap: balance;
+}
+.wg21-thread-detail__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--wg21-space-3);
+    margin-block-start: var(--wg21-space-4);
+}
+.wg21-thread-detail__counts {
+    margin: 0;
+    color: var(--wg21-muted);
+    font-size: var(--wg21-fs-sm);
+}
+.wg21-thread-detail__sort {
+    margin: 0;
+    font-size: var(--wg21-fs-sm);
+}
+.wg21-thread-detail__sort a {
+    color: var(--wg21-link);
+    text-decoration: none;
+}
+.wg21-thread-detail__sort a:hover {
+    color: var(--wg21-link-hover);
+    text-decoration: underline;
+}
+
+/* Message stack */
+.wg21-thread-detail__messages {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-4);
+}
+.wg21-thread-detail__replies {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-4);
+}
+/* Reply indent — match HyperKitty: only nested replies (.reply-level-N) indent.
+ * Top-level .odd/.even wrappers stay flush with the original message. */
+.wg21-thread-detail .replies {
+    --wg21-reply-indent-step: var(--wg21-space-6);
+    margin-top: 0;
+}
+.wg21-thread-detail .replies > .reply-level-1 {
+    margin-inline-start: calc(var(--wg21-reply-indent-step) * 1);
+}
+.wg21-thread-detail .replies > .reply-level-2 {
+    margin-inline-start: calc(var(--wg21-reply-indent-step) * 2);
+}
+.wg21-thread-detail .replies > .reply-level-3 {
+    margin-inline-start: calc(var(--wg21-reply-indent-step) * 3);
+}
+.wg21-thread-detail .replies > .reply-level-4 {
+    margin-inline-start: calc(var(--wg21-reply-indent-step) * 4);
+}
+.wg21-thread-detail .replies > .reply-level-5 {
+    margin-inline-start: calc(var(--wg21-reply-indent-step) * 5);
+}
+.view-thread.wg21-thread-detail .replies .wg21-thread-card.email,
+.wg21-thread-detail .replies .email {
+    margin: 0;
+}
+.wg21-thread-detail.view-thread .unread {
+    border-left: none;
+}
+
+/* Sidebar info panel — Age / Last active rows + stacked metrics */
+.wg21-thread-detail__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-4);
+}
+.wg21-thread-detail__facts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-2);
+}
+.wg21-thread-detail__fact-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--wg21-space-4);
+}
+.wg21-thread-detail__fact-label {
+    font-size: var(--wg21-fs-sm);
+    color: var(--wg21-muted);
+}
+.wg21-thread-detail__fact-value {
+    font-family: var(--wg21-font-serif);
+    font-size: var(--wg21-fs-lead);
+    font-weight: 400;
+    color: var(--wg21-ink);
+    text-align: end;
+    white-space: nowrap;
+}
+.wg21-thread-detail__info ul.list-stats.wg21-icon-metrics.wg21-thread-detail__metrics {
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    gap: var(--wg21-space-2);
+    margin: 0;
+    padding: 0;
+}
+.wg21-thread-detail__info ul.list-stats.wg21-icon-metrics.wg21-thread-detail__metrics li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wg21-space-2);
+    width: 100%;
+}
+
+.wg21-thread-detail__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-3);
+}
+.wg21-thread-detail__actions .wg21-btn {
+    width: 100%;
+    min-height: var(--wg21-touch);
+}
+.wg21-thread-detail__actions .wg21-btn--primary {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.wg21-thread-detail h2.wg21-section-label,
+.wg21-thread-detail h3.wg21-section-label,
+.wg21-thread-detail #participants_title {
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-sm);
+    font-weight: 600;
+    letter-spacing: var(--wg21-tracking-eyebrow);
+    color: var(--wg21-muted);
+    line-height: var(--wg21-lh-base);
+    margin: 0 0 var(--wg21-space-4);
+    text-transform: uppercase;
+}
+
+.wg21-thread-detail__info .wg21-icon-metrics .fa {
+    color: var(--wg21-gold);
+    width: 1.25em;
+    text-align: center;
+}
+#thread-overview-info .wg21-icon-metrics .fa {
+    color: var(--wg21-gold);
+  }
+
+/* Sidebar widget cards — beat HyperKitty #tags / #participants spacing */
+.wg21-thread-detail__tags-card #tags,
+.wg21-thread-detail #tags {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: inherit;
+}
+.wg21-thread-detail #fav_form.favorite {
+    margin: 0;
+    color: inherit;
+}
+.wg21-thread-detail__tags-card #tags ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wg21-space-2);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.wg21-thread-detail #tags ul li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wg21-space-1);
+    margin: 0;
+    padding: 0;
+}
+.wg21-thread-detail #tags ul li > span {
+    display: none;
+}
+.wg21-thread-detail #tags ul li > a {
+    color: var(--wg21-link);
+    font-size: var(--wg21-fs-sm);
+    text-decoration: none;
+}
+.wg21-thread-detail #tags ul li > a:hover {
+    color: var(--wg21-link-hover);
+    text-decoration: underline;
+}
+.wg21-thread-detail #add-tag form {
+    margin: 0;
+}
+.wg21-thread-detail__tags-card #add-tag {
+    margin-block-start: var(--wg21-space-4);
+}
+.wg21-thread-detail .wg21-thread-detail__aside-card,
+.wg21-thread-detail__tags-card,
+.wg21-thread-detail #participants {
+    padding: var(--wg21-space-4) var(--wg21-space-6);
+}
+
+/* Participants list in sidebar */
+.wg21-thread-detail #participants {
+    margin-top: 0;
+    color: inherit;
+}
+.wg21-thread-detail #participants li {
+    margin: 0;
+}
+/* Rows are .wg21-poster (threads.css); their own padding sets the rhythm. */
+.wg21-thread-detail__participants {
+    display: flex;
+    flex-direction: column;
+}
+.wg21-thread-detail__participant {
+    min-inline-size: 0;
+}
+
+/* Leftover sidebar cards */
+.wg21-thread-detail__aside-card-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--wg21-space-2);
+    font-size: var(--wg21-fs-sm);
+}
+/* Do not set display on these <a>s: HyperKitty's setup_favorites() writes
+ * inline display:block/none on .notsaved/.saved. Icon metrics below work
+ * the same in block and flex formatting contexts. */
+.wg21-thread-detail__aside-card-links a {
+    color: var(--wg21-link);
+    text-decoration: none;
+}
+.wg21-thread-detail__aside-card-links a:hover {
+    color: var(--wg21-link-hover);
+}
+/* Beat HyperKitty `#thread-overview-info .fa` / `#message-overview-info .fa`
+ * (gray rest, white on hover) and `.favorite a i { margin-right: 0.3em }`. */
+:is(#thread-overview-info, #message-overview-info) .wg21-thread-detail__aside-card-links a .fa {
+    display: inline-block;
+    width: 1.25em;
+    margin: 0;
+    margin-inline-end: var(--wg21-space-2);
+    text-align: center;
+    vertical-align: middle;
+    color: inherit;
+}
+
+.wg21-thread-detail__aside-card-links form.favorite {
+    display: contents;
+    margin: 0;
+}
+
+/* Unread navbar — neutralize HyperKitty fixed bar so it sits in the rail */
+.wg21-thread-detail__aside #unreadnavbar,
+.wg21-thread-detail #unreadnavbar {
+    position: static;
+    display: block;
+    inset: auto;
+    bottom: auto;
+    right: auto;
+    width: auto;
+    margin: 0;
+    padding: var(--wg21-space-4) var(--wg21-space-6);
+    background: var(--wg21-surface-white);
+    border: 1px solid var(--wg21-border);
+    box-shadow: none;
+    text-align: start;
+    font-size: var(--wg21-fs-sm);
+    color: var(--wg21-ink);
+}
+.wg21-thread-detail #unreadnavbar > div {
+    width: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+.wg21-thread-detail__aside #unreadnavbar a {
+    color: var(--wg21-link);
+}
+
+/* Beat upstream view-thread / thread layout floats */
+.view-thread.wg21-thread-detail .row {
+    margin: 0;
+}
+.view-thread.wg21-thread-detail .thread-header {
+    float: none;
+    width: auto;
+}
+
+@media (max-width: 991.98px) {
+    .wg21-thread-detail__layout {
+        grid-template-columns: 1fr;
+        gap: var(--wg21-space-8);
+        padding-inline: 0;
+    }
+    .wg21-thread-detail__header {
+        padding-inline: 0;
+    }
+}
+
+@media (max-width: 575.98px) {
+    /* Match HyperKitty: drop nesting indent on narrow viewports. */
+    .wg21-thread-detail .replies > .reply-level-1,
+    .wg21-thread-detail .replies > .reply-level-2,
+    .wg21-thread-detail .replies > .reply-level-3,
+    .wg21-thread-detail .replies > .reply-level-4,
+    .wg21-thread-detail .replies > .reply-level-5 {
+        margin-inline-start: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .wg21-thread-detail__rule {
+        margin-inline: calc(-1 * var(--wg21-space-6));
+        padding-inline: var(--wg21-space-4);
+    }
+    .wg21-thread-detail__title,
+    .wg21-thread-detail h1.wg21-thread-detail__title {
+        font-size: 1.75rem !important;
+    }
+}
+
+@media (forced-colors: active) {
+    .wg21-thread-detail__rule { border-bottom: var(--wg21-frame-gold-width) solid CanvasText; }
+    .wg21-thread-detail__rule::after { border-block-end-color: CanvasText; }
+}

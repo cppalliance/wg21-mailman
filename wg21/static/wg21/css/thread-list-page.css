@@ -1,0 +1,165 @@
+/* WG21 All Threads page (page-owned).
+ * Loaded from thread_list.html only, which also serves the month and day
+ * archive views. Thread card rules live in threads.css; shared primitives
+ * (.wg21-card, .wg21-section-label, .wg21-month-select) in components.css.
+ *
+ * No tab bar on this page — the navbar bottom rule is dropped and the
+ * double-gold band below (.wg21-thread-list__rule) carries the same chrome
+ * as .wg21-tabs on the list overview. */
+
+.wg21-page-thread-list .wg21-content {
+    padding-block-start: 0;
+    background-color: var(--wg21-surface);
+    background-image: var(--wg21-marble);
+    background-size: cover;
+    background-position: center;
+}
+
+.wg21-page-thread-list .wg21-navbar {
+    border-bottom: none;
+}
+
+.wg21-page-thread-list footer {
+    margin-top: 0;
+}
+
+/* Double gold rule — geometry matches .wg21-tabs on the list overview. */
+.wg21-thread-list__rule {
+    --wg21-tabs-rule: var(--wg21-frame-gap);
+    --wg21-tabs-rule-band: 9px;
+    --wg21-tabs-rule-offset: 15px;
+    --wg21-tabs-rule-thin: 3px;
+    position: relative;
+    background: var(--wg21-surface);
+    border-bottom: var(--wg21-tabs-rule) solid var(--wg21-gold);
+    margin-inline: calc(-1 * var(--wg21-space-6));
+    padding-inline: var(--wg21-space-6);
+    margin-block-end: var(--wg21-space-8);
+    min-block-size: var(--wg21-space-2);
+}
+.wg21-thread-list__rule::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: calc(-1 * var(--wg21-tabs-rule-offset));
+    height: var(--wg21-tabs-rule-band);
+    background-color: var(--wg21-surface);
+    border-block-end: var(--wg21-tabs-rule-thin) solid var(--wg21-gold-border);
+    pointer-events: none;
+}
+
+/* Two-column body (~70/30), matching the overview layout. */
+.wg21-thread-list__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(16rem, 3fr);
+    gap: var(--wg21-space-12);
+    align-items: start;
+    padding-inline: var(--wg21-space-2);
+}
+.wg21-thread-list__main,
+.wg21-thread-list__aside {
+    min-inline-size: 0;
+}
+
+/* Sidebar scrolls in normal document flow (no sticky / fixed rail). */
+.wg21-thread-list__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wg21-space-4);
+    top: var(--wg21-space-4);
+    position: sticky;
+    align-self: start;
+    height: auto;
+    overflow: visible;
+}
+.wg21-thread-list__aside .wg21-card {
+    border: 1px solid var(--wg21-border);
+}
+
+/* Header spans full width above the two-column body. */
+.wg21-thread-list__header {
+    margin-block-end: var(--wg21-space-8);
+    padding-inline: var(--wg21-space-2);
+}
+.wg21-thread-list__title,
+.wg21-thread-list h1.wg21-thread-list__title {
+    font-family: var(--wg21-font-serif);
+    font-size: 2.5rem !important; /* beat hyperkitty's h1 { !important } */
+    font-weight: 400;
+    line-height: var(--wg21-lh-tight);
+    margin: 0 0 var(--wg21-space-2);
+    text-wrap: balance;
+}
+.wg21-thread-list__title a,
+.wg21-thread-list__title a:hover {
+    color: var(--wg21-gold);
+    text-decoration: none;
+}
+.wg21-thread-list__title a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+.wg21-thread-list__subtitle {
+    margin: 0;
+    color: var(--wg21-gold);
+    font-family: var(--wg21-font-body);
+    font-size: var(--wg21-fs-lead);
+    text-wrap: pretty;
+}
+.wg21-thread-list__address {
+    font-family: var(--wg21-font-mono);
+    font-size: 0.9em;
+}
+
+/* Sidebar */
+.wg21-thread-list__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wg21-space-3);
+}
+.wg21-thread-list__actions .wg21-btn {
+    flex: 1 1 min-content;
+    min-height: var(--wg21-touch);
+    min-width: 12.5rem;
+}
+/* The month select is compact by default (see components.css); stretch it to
+ * the rail like the overview does. */
+.wg21-thread-list__aside .wg21-month-select,
+.wg21-thread-list__aside .wg21-month-select__btn {
+    display: inline-flex;
+    width: 100%;
+}
+.wg21-thread-list__aside .wg21-month-select .dropdown-menu {
+    width: 100%;
+}
+
+/* Paginator: upstream markup, unstyled this pass. Just give it room. */
+.wg21-thread-list .paginator {
+    margin-block-start: var(--wg21-space-8);
+}
+
+/* Beat _hyperkitty-threadslist.scss hooks retained on #thread-list. */
+#thread-list .thread-list-header { margin: 0; padding: 0; }
+
+@media (max-width: 991.98px) {
+    .wg21-thread-list__layout {
+        grid-template-columns: 1fr;
+        gap: var(--wg21-space-8);
+        padding-inline: 0;
+    }
+    .wg21-thread-list__header {
+        padding-inline: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .wg21-thread-list__rule {
+        margin-inline: calc(-1 * var(--wg21-space-6));
+        padding-inline: var(--wg21-space-4);
+    }
+}
+
+@media (forced-colors: active) {
+    .wg21-thread-list__rule { border-bottom: var(--wg21-frame-gold-width) solid CanvasText; }
+    .wg21-thread-list__rule::after { border-block-end-color: CanvasText; }
+}

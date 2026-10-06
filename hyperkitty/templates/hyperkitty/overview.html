@@ -1,0 +1,212 @@
+{% extends "hyperkitty/base.html" %}
+{% load i18n %}
+{% load hk_generic %}
+{% load static %}
+{% load cache %}
+
+
+{% block head_title %}
+    {{ mlist.display_name|default:mlist.name }} - {{ block.super }}
+{% endblock %}
+
+{% block head_feed %}
+    <link rel="alternate" type="application/rss+xml" title="{{ mlist.display_name }}" href="{% url 'hk_list_feed' mlist_fqdn=mlist.name %}"/>
+{% endblock %}
+
+{% block additional_stylesheets %}
+    <link rel="stylesheet" href="{% static 'wg21/css/threads.css' %}" />
+    <link rel="stylesheet" href="{% static 'wg21/css/overview-page.css' %}" />
+{% endblock %}
+
+{% block body_class %}wg21-page-overview{% endblock %}
+
+{% block wg21_navbar %}
+    {% trans 'Archives' as breadcrumb_label %}
+    {% if mlist.display_name %}
+        {% include 'wg21/navbar.html' with brand_url='hk_root' breadcrumb_label=breadcrumb_label breadcrumb_current=mlist.display_name search_action='hk_search' search_query=query mlist=mlist %}
+    {% else %}
+        {% with crumb=mlist.name|until:"@" %}
+            {% include 'wg21/navbar.html' with brand_url='hk_root' breadcrumb_label=breadcrumb_label breadcrumb_current=crumb search_action='hk_search' search_query=query mlist=mlist %}
+        {% endwith %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% comment %}
+Retained HyperKitty hooks (do not rename):
+  - `.overview` — upstream overview SCSS
+  - `.discussions`, `.nav-pills`, `data-bs-toggle="pill"`, `#most-recent`,
+    `#most-active`, `#most-popular`, `#flagged`, `#posted-to`, `.tab-pane`,
+    `.tab-content` — Bootstrap tab JS + hyperkitty-overview.js
+  - `div[data-load-from]` — async fragment load
+  - `.stats .chart` + `.ajaxloader` — D3 activity chart via setup_overview
+  - `#navbarMonthsListDrop` (in month_list fragment)
+  - `#title`, `#description`, `#most-active-poster`, `#stats`
+  - `setup_overview(...)` in additionaljs
+{% endcomment %}
+<div class="overview wg21-overview">
+
+    <nav class="wg21-tabs discussions" aria-label="{% trans 'Discussion views' %}">
+        <ul class="wg21-tabs__list nav nav-pills flex-nowrap" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a id="tab-most-recent" href="#most-recent" aria-controls="most-recent" role="tab" data-bs-toggle="pill" class="nav-link active" aria-selected="true">{% trans 'Recent' %}</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a id="tab-most-active" class="nav-link" href="#most-active" aria-controls="most-active" role="tab" data-bs-toggle="pill" aria-selected="false">{% trans 'Active' %}</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a id="tab-most-popular" class="nav-link" href="#most-popular" aria-controls="most-popular" role="tab" data-bs-toggle="pill" aria-selected="false">{% trans 'Popular' %}</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item" role="presentation">
+                <a id="tab-flagged" class="nav-link" href="#flagged" aria-controls="flagged" role="tab" data-bs-toggle="pill" aria-selected="false">{% trans 'Favorites' %}</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a id="tab-posted-to" class="nav-link" href="#posted-to" aria-controls="posted-to" role="tab" data-bs-toggle="pill" aria-selected="false">{% trans 'Posted' %}</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <div class="wg21-overview__layout">
+        <div class="wg21-overview__main">
+            <header class="wg21-overview__header" id="title">
+                <h1 class="wg21-overview__title">
+                    {% if mlist.display_name %}
+                        {{ mlist.display_name }}
+                    {% else %}
+                        {{ mlist.name|until:"@" }}
+                    {% endif %}
+                </h1>
+                <p class="wg21-overview__subtitle" id="description">
+                    <span class="wg21-overview__address">{{ mlist.name }}</span>
+                    {% if mlist.description %}
+                        <span aria-hidden="true"> · </span>
+                        <span class="wg21-overview__desc">{{ mlist.description }}</span>
+                    {% endif %}
+                </p>
+            </header>
+
+            <div class="tab-content discussions wg21-overview__threads">
+                {% trans "Recently active discussions" as recent_heading %}
+                {% url 'hk_list_overview_recent_threads' mlist.name as recent_url %}
+                {% include 'hyperkitty/fragments/overview_tab_pane.html' with pane_id='most-recent' tab_id='tab-most-recent' heading=recent_heading load_url=recent_url pane_active='1' only %}
+
+                {% trans "Most active discussions" as active_heading %}
+                {% url 'hk_list_overview_top_threads' mlist.name as active_url %}
+                {% include 'hyperkitty/fragments/overview_tab_pane.html' with pane_id='most-active' tab_id='tab-most-active' heading=active_heading load_url=active_url only %}
+
+                {% trans "Most popular discussions" as popular_heading %}
+                {% url 'hk_list_overview_pop_threads' mlist.name as popular_url %}
+                {% include 'hyperkitty/fragments/overview_tab_pane.html' with pane_id='most-popular' tab_id='tab-most-popular' heading=popular_heading load_url=popular_url only %}
+
+                {% if user.is_authenticated %}
+                {% trans "Discussions You've Flagged" as flagged_heading %}
+                {% url 'hk_list_overview_favorites' mlist.name as flagged_url %}
+                {% include 'hyperkitty/fragments/overview_tab_pane.html' with pane_id='flagged' tab_id='tab-flagged' heading=flagged_heading load_url=flagged_url count=flagged_threads|length only %}
+
+                {% trans "Discussions You've Posted to" as posted_heading %}
+                {% url 'hk_list_overview_posted_to' mlist.name as posted_url %}
+                {% include 'hyperkitty/fragments/overview_tab_pane.html' with pane_id='posted-to' tab_id='tab-posted-to' heading=posted_heading load_url=posted_url count=threads_posted_to|length only %}
+                {% endif %}
+            </div>
+        </div>
+
+        <aside class="wg21-overview__aside" aria-label="{% trans 'List actions and activity' %}">
+            <div class="wg21-overview__actions">
+                <a href="{% url 'hk_archives_latest' mlist_fqdn=mlist.name %}" class="wg21-btn wg21-btn--primary">{% trans "All Threads" %}</a>
+                {% if posting_enabled %}
+                <a href="{% url 'hk_message_new' mlist_fqdn=mlist.name %}" class="wg21-btn wg21-btn--gold">
+                    <span aria-hidden="true">+</span>
+                    {% trans "New thread" %}
+                </a>
+                {% endif %}
+            </div>
+
+            {% cache 86400 month_list_select_wg21_v2 LANGUAGE_CODE months_list mlist.name %}
+                {% include 'hyperkitty/fragments/month_list.html' %}
+            {% endcache %}
+
+            <div class="stats wg21-card">
+                <div class="anchor-link">
+                    <a id="stats"></a>
+                </div>
+                <h2 class="wg21-section-label">{% trans "Activity Summary" %}</h2>
+                <p class="caption">{% trans "Post volume over the past <strong>30</strong> days." %}</p>
+                <div class="chart w-100">
+                    <img alt="{% trans 'Loading…' %}" class="ajaxloader" src="{% static 'hyperkitty/img/ajax-loader.gif' %}" width="32" height="32" />
+                </div>
+                <p class="duration-text">
+                    {% trans "Activity in the past <strong>30</strong> days:" %}
+                </p>
+                <ul class="list-stats list-unstyled wg21-icon-metrics">
+                    <li>
+                        <span class="wg21-icon wg21-icon--users" aria-hidden="true"></span>
+                        <span>{{ mlist.recent_participants_count }} {% trans "participants" %}</span>
+                    </li>
+                    <li>
+                        <span class="wg21-icon wg21-icon--comments" aria-hidden="true"></span>
+                        <span>{{ mlist.recent_threads_count }} {% trans "discussions" %}</span>
+                    </li>
+                </ul>
+            </div>
+
+            <section id="most-active-poster" class="wg21-card">
+                <h2 class="wg21-section-label">{% trans "Most active posters" %}</h2>
+                <div class="wg21-posters" data-load-from="{% url 'hk_list_overview_top_posters' mlist.name %}">
+                    <img alt="{% trans 'Loading…' %}" class="ajaxloader" src="{% static 'hyperkitty/img/ajax-loader.gif' %}" width="32" height="32" />
+                </div>
+            </section>
+
+            {% if top_author %}
+            <section id="discussion-maker" class="wg21-card">
+                <h2 class="wg21-section-label">{% trans "Prominent posters" %}</h2>
+                {% trans "kudos" as kudos_label %}
+                <div class="wg21-posters">
+                    {% for author in top_author %}
+                        {% include 'hyperkitty/fragments/overview_poster.html' with name=author.name rank=forloop.counter score=author.kudos score_prefix='+' score_label=kudos_label only %}
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            {% if export_allowed or user.is_staff or user.is_superuser %}
+            <div class="wg21-overview__extras">
+                {% if export_allowed %}
+                <div class="dropdown wg21-overview__export">
+                    <button type="button" class="wg21-overview__quiet dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        {% trans "Download archive" %}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ export.recent }}">{% trans "Past 30 days" %} <small>(mbox)</small></a></li>
+                        <li><a class="dropdown-item" href="{{ export.month }}">{% trans "This month" %} <small>(mbox)</small></a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'hk_list_export_mbox' mlist_fqdn=mlist.name filename=mlist.name %}">{% trans "Entire archive" %} <small>(mbox)</small></a></li>
+                    </ul>
+                </div>
+                {% endif %}
+                {% if user.is_staff or user.is_superuser %}
+                <div class="list-actions wg21-overview__admin">
+                    <a href="{% url 'hk_list_delete' mlist_fqdn=mlist.name %}" class="wg21-overview__quiet">{% trans "Delete Archive" %}</a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </aside>
+    </div>
+
+    <a href="#" class="back-to-top d-none">{% trans "Back to top" %}</a>
+</div>
+
+{% endblock %}
+
+{% block additionaljs %}
+    <script src="{% static 'wg21/js/overview.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            wg21Overview.init("{% url 'hk_list_recent_activity' mlist.name %}");
+        });
+    </script>
+{% endblock %}

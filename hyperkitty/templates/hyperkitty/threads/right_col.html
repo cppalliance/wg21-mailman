@@ -1,0 +1,135 @@
+{% load i18n %}
+{% load hk_generic %}
+{% load cache %}
+{% export_allowed as export_allowed %}
+
+{% comment %}
+    Overrides HyperKitty 1.3.12 hyperkitty/threads/right_col.html.
+    WG21 Thread Detail sidebar — see thread_detail_reskin plan.
+
+    Order: info panel → action buttons → Actions card → Tags (list + add form) → Unreads → Participants.
+    Age / Last active label mapping fixed (Age = days_old, Last active = days_inactive).
+
+    Retained HyperKitty hooks:
+      - #thread-overview-info, #thread-date-info, #fav_form, #tags, #add-tag, #add-tag-form
+      - #participants / #participants_title, #unreadnavbar, .nextunread / .prevunread
+{% endcomment %}
+
+<section id="thread-overview-info" class="wg21-thread-detail__sidebar">
+
+    <div class="wg21-card wg21-thread-detail__info">
+        <div id="thread-date-info" class="wg21-thread-detail__facts">
+            <div class="wg21-thread-detail__fact-row">
+                <span class="wg21-thread-detail__fact-label days-text">{% trans "Age" %}</span>
+                <span class="wg21-thread-detail__fact-value days-num">
+                    {% blocktrans count counter=days_old %}{{ counter }} day{% plural %}{{ counter }} days{% endblocktrans %}
+                </span>
+            </div>
+            <div class="wg21-thread-detail__fact-row">
+                <span class="wg21-thread-detail__fact-label days-text">{% trans "Last active" %}</span>
+                <span class="wg21-thread-detail__fact-value days-num">
+                    {% blocktrans count counter=days_inactive %}{{ counter }} day ago{% plural %}{{ counter }} days ago{% endblocktrans %}
+                </span>
+            </div>
+        </div>
+
+        <ul class="list-stats list-unstyled wg21-icon-metrics wg21-thread-detail__metrics">
+            <li>
+                <span class="wg21-icon wg21-icon--comments" aria-hidden="true"></span>
+                <span>{% blocktrans %}{{ num_comments }} comments{% endblocktrans %}</span>
+            </li>
+            <li>
+                <span class="wg21-icon wg21-icon--users" aria-hidden="true"></span>
+                <span>{% blocktrans with participants_count=thread.participants_count %}{{ participants_count }} participants{% endblocktrans %}</span>
+            </li>
+            {% if user.is_authenticated %}
+            <li>
+                <span class="fa fa-fw fa-envelope" aria-hidden="true"></span>
+                <span>{% blocktrans %}{{ unread_count }} unread messages{% endblocktrans %}</span>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div class="wg21-thread-detail__actions">
+        <a href="{% url 'hk_list_overview' mlist_fqdn=mlist.name %}" class="wg21-btn wg21-btn--primary">
+            {% trans 'List overview' %}
+        </a>
+        {% if 'postorius' in INSTALLED_APPS and user.is_authenticated %}
+        <a class="wg21-btn wg21-btn--outline postorius" href="{% url 'list_summary' mlist.list_id %}">
+            <i class="fa fa-fw fa-inbox" aria-hidden="true"></i>
+            {% trans "Manage subscription" %}
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="wg21-card wg21-thread-detail__aside-card{% if user.is_staff or user.is_superuser or user_is_owner %} wg21-thread-detail__aside-card--staff{% endif %}">
+        <h2 class="wg21-section-label">{% trans "Actions" %}</h2>
+        <div class="wg21-thread-detail__aside-card-links">
+            {% if export and export_allowed %}
+            <a href="{{ export.url }}" title="{{ export.title }}"><i class="fa fa-fw fa-download" aria-hidden="true"></i>{{ export.message }}</a>
+            {% endif %}
+
+            <form id="fav_form" name="favorite" method="post" class="favorite"
+                  action="{% url 'hk_favorite' mlist_fqdn=mlist.name threadid=thread.thread_id %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ fav_action }}" />
+                <a href="#AddFav" class="notsaved{% if not user.is_authenticated %} disabled{% endif %}"{% if not user.is_authenticated %} title="{% trans 'You must be logged-in to have favorites.' %}"{% endif %}><i class="fa fa-fw fa-star" aria-hidden="true"></i>{% trans "Add to favorites" %}</a>
+                <a href="#RmFav" class="saved"><i class="fa fa-fw fa-star" aria-hidden="true"></i>{% trans "Remove from favorites" %}</a>
+            </form>
+
+            {% if user.is_staff or user.is_superuser or user_is_owner %}
+            <a href="{% url 'hk_thread_reattach' mlist_fqdn=mlist.name threadid=thread.thread_id %}"><i class="fa fa-fw fa-plug" aria-hidden="true"></i>{% trans "Reattach this thread" %}</a>
+            <a href="{% url 'hk_thread_delete' mlist_fqdn=mlist.name threadid=thread.thread_id %}"><i class="fa fa-fw fa-trash" aria-hidden="true"></i>{% trans "Delete this thread" %}</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="wg21-card wg21-thread-detail__aside-card wg21-thread-detail__tags-card">
+        <h2 class="wg21-section-label">{% trans "Tags" %}</h2>
+        <div id="tags">
+            {% include 'hyperkitty/threads/tags.html' %}
+        </div>
+        {% if user.is_authenticated %}
+        <div id="add-tag" class="wg21-thread-detail__add-tag">
+            <form id="add-tag-form" name="addtag" method="post"
+                  action="{% url 'hk_tags' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
+                  data-autocompleteurl="{% url 'hk_suggest_tags' mlist_fqdn=mlist.name threadid=thread.thread_id %}">
+                {% csrf_token %}
+                {{ addtag_form.as_p }}
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <div id="unreadnavbar" class="wg21-card wg21-thread-detail__aside-card">
+        <div>
+            {% trans "Unreads:" %} <span class="unreadindex">0</span>/{{ unread_count }}
+            &nbsp;
+            {% trans "Go to:" %}
+            <a href="#" class="nextunread" title="hotkey: j">{% trans "next" %} &darr;</a>
+            -
+            <a href="#" class="prevunread" title="hotkey: k">{% trans "prev" %} &uarr;</a>
+        </div>
+    </div>
+    {% endif %}
+
+    {% cache 86400 thread_participants_wg21_v3 thread.id %}
+    <div id="participants" class="wg21-card wg21-thread-detail__aside-card">
+        <h2 id="participants_title" class="wg21-section-label">
+            {% trans "Participants" %} ({{ thread.participants_count }})
+        </h2>
+        <ul class="wg21-thread-detail__participants wg21-posters list-unstyled">
+            {% for participant in thread.participants|sort_by_name %}
+            <li class="wg21-thread-detail__participant">
+                {% with participant_name=participant.name|default:participant.address|escapeemail %}
+                {% include 'hyperkitty/fragments/overview_poster.html' with name=participant_name only %}
+                {% endwith %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endcache %}
+
+</section>

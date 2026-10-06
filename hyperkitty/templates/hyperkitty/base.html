@@ -29,17 +29,22 @@
         <link rel="stylesheet" href="{% static 'wg21/css/components.css' %}" />
         {% block additional_stylesheets %} {% endblock %}
         {% block head_feed %}{% endblock %}
-        {% include 'hyperkitty/headers.html' %}
+        {# Takes the place of the packaged hyperkitty/headers.html hook, which is empty #}
+        {# upstream and which ansible-mailman3 tasks/plausible.yml overwrites with its  #}
+        {# own Plausible tag. Including that hook as well would emit the tag twice.     #}
+        {% include 'wg21/analytics_scripts.html' %}
     </head>
 
-    <body>
+    <body class="{% block body_class %}{% endblock %}">
 
     {% include 'hyperkitty/top.html' %}
 
-    {% include 'wg21/utility_bar.html' with active='lists' %}
+    {% include 'wg21/utility_bar.html' with active='archives' %}
 
+    {% block wg21_navbar %}
     {% trans 'Archives' as breadcrumb_label %}
     {% include 'wg21/navbar.html' with brand_url='hk_root' breadcrumb_label=breadcrumb_label search_action='hk_search' search_query=query mlist=mlist %}
+    {% endblock %}
 
     {% if messages %}
     <div class="flashmsgs container-fluid">
