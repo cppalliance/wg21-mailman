@@ -1,0 +1,7 @@
+{# Analytics tags shared by Postorius and HyperKitty, included inside <head>. #}
+{#                                                                            #}
+{# ansible-mailman3 tasks/plausible.yml also injects this tag, by writing its  #}
+{# own postorius/base.html and hyperkitty/headers.html. We shadow both of      #}
+{# those files, so the role's copies never render and this is the only source. #}
+{# The domain is hardcoded because it is fixed per deployment.                 #}
+<script defer data-domain="lists.wg21.org" src="https://plausible.io/js/script.js"></script>
